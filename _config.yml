@@ -3,11 +3,11 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: 小生有礼
+title: ruanyi
 subtitle: ''
 description: ''
 keywords:
-author: rls
+author: ruanyi
 language: cn
 timezone: ''
 
@@ -96,7 +96,7 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: jekyll-theme-cayman
+theme: landscape
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
