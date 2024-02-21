@@ -8,7 +8,7 @@ on:
 env:
   GIT_USER: ruanlongsheng@foxmail.com
   GIT_EMAIL: 540728086@qq.com
-  THEME_REPO: https://github.com/jerryc127/hexo-theme-butterfly.git
+  THEME_REPO: git@github.com:jerryc127/hexo-theme-butterfly.git
   THEME_BRANCH: master
   DEPLOY_REPO: https://github.com/ruanyi/ruanyi.github.io.git
   DEPLOY_BRANCH: master
