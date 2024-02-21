@@ -1,4 +1,4 @@
-name: CI
+name: build-and-deploy
 
 on:
   push:
@@ -31,7 +31,7 @@ jobs:
         with:
           repository: ${{ env.THEME_REPO }}
           ref: ${{ env.THEME_BRANCH }}
-          path: themes/concise
+          path: themes/butterfly
 
       - name: Checkout deploy repo
         uses: actions/checkout@v4
