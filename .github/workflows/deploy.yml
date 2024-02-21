@@ -6,11 +6,11 @@ on:
       - master
 
 env:
-  GIT_USER: ruanyi
+  GIT_USER: ruanlongsheng@foxmail.com
   GIT_EMAIL: 540728086@qq.com
-  THEME_REPO: themes/butterfly
+  THEME_REPO: https://github.com/jerryc127/hexo-theme-butterfly.git
   THEME_BRANCH: master
-  DEPLOY_REPO: https://github.com/jerryc127/hexo-theme-butterfly.git
+  DEPLOY_REPO: https://github.com/ruanyi/ruanyi.github.io.git
   DEPLOY_BRANCH: master
 
 jobs:
