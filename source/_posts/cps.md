@@ -4,203 +4,29 @@ tags: cloud process sys
 ---
 
 # 背景
+&ensp;&ensp;作为现代科技的重要组成部分，云端图片、视频处理的体系，为我们提供了广泛而强大的工具，极大地拓展了数字媒体处理的领域。通过将图片和视频处理移至云端，我们能够享受到更高效、灵活、可扩展的服务，能够方便、快捷、高效地服务个人用户、企业和开发者。<br>
 
-&ensp;&ensp;2008 ~ 2020年，在这十几年期间，PC互联网往移动互联网风风火火地大规模迁移后，产生了无数的变化，其中，单谈图片、视频处理这一细分领域，从专业化变得越来越简单化、傻瓜化，普通用户都能简单基于手机app进行个性化的图片、视频处理。<br>
-&ensp;&ensp;2017年，抖音 + 快手短视频社区爆火背后的大功臣之一：是视频处理工具，例如：服务端转码 + 加水印等。<br>
-&ensp;&ensp;2023年随着aigc的爆火：文生图、图生图、文生视频等等火出圈。<br>
-&ensp;&ensp;这些爆火的背后，背后展示出来的系统架构规律之一是：客户端部署算法、模型逐步往服务端部署算法、模型靠。也就是：客户端端处理 -> 云处理方向靠。
+# 发展历程
+&ensp;&ensp;云端图片、视频处理的发展历程是一个与云计算技术和网络基础设施发展紧密相连的过程。以下是云端图片视频处理的发展史的主要阶段：
 
-# 云处理
-&ensp;&ensp;所谓：云处理，顾名思义，云端图片、视频处理体系的简称，它是对存储在小文件系统里的图片、视频，发起相关的处理。用公式来表达：媒体s = fn (媒体s，参数).
+### 1. **起步阶段（2000年前）：**
+&ensp;&ensp;云端图片视频处理在早期主要受限于网络带宽、计算资源和存储技术的限制。由于云计算概念尚未充分发展，图片、视频计算主要依赖于本地设备进行（简称：端处理），优势：隐私性好、方便、快捷，劣势：受到硬件性能限制非常大。
 
-# 图片处理功能
-&ensp;&ensp;对存储在小文件系统里的图片地址，进行相关的处理，注意：请确保相关的url地址能够正常下载 or 访问。
+### 2. **初期云计算服务（2006年-2010年）：**
+&ensp;&ensp;随着云计算概念的提出，云服务提供商如Amazon Web Services (AWS)、Google Cloud Platform (GCP)、国内的阿里云等开始推出基础的云计算服务。图片、视频处理逐渐开始迁移到云端，但，规模和复杂性仍受限于当时的技术水平。
 
-## 图片基本信息
-&ensp;&ensp;获取图片的基本信息，例如：图片格式、文件大小、色彩模型、宽、搞、帧个数，格式如下：
-   ```json
-{
-          "format":  "JPEG",
-          "width":  224,
-          "height":  224,
-          "orientation":  "1",
-          "colorModel":  "sRGB",
-          "frameNumber":  "1",
-          "fileSize":  "6574B"
-}
-   ```
-<br>
-使用限制：20M以内
+### 3. **云端计算技术逐渐成熟（2011年-2015年）：**
+&ensp;&ensp;在这一时期，云计算技术不断发展，云服务商提供了更多的计算、存储和网络资源。图片、视频处理也逐渐脱离本地设备，转向云端进行，提高了处理速度和效率。此时期，许多基础的图像处理和编解码服务得以涌现。
 
-## 图片瘦身
+### 4. **深度学习的兴起（2016年-至今）：**
+&ensp;&ensp;深度学习技术的兴起对云端图片视频处理产生了深远影响。深度学习算法如卷积神经网络 (CNN) 的应用使得图像和视频处理更加精确和智能。云服务商纷纷推出深度学习服务，为图像识别、人脸识别、物体检测等任务提供了强大的支持。
 
-## 图片缩略
+### 5. **多媒体服务整合（2018年-至今）：**
+&ensp;&ensp;云端图片、视频处理逐渐从简单的图像编辑、转换扩展到更复杂的多媒体服务整合。云服务商提供全面的多媒体处理服务，包括：图像识别、视频分析、实时流媒体处理等，为用户提供了更多选择。
 
-## 图片裁剪
+### 6. **边缘计算和5G技术的应用（2020年-至今）：**
+&ensp;&ensp;随着边缘计算和5G技术的不断发展，云端图片视频处理在边缘设备上的应用逐渐增多。这使得实时性要求更高的应用，如智能监控、自动驾驶等，在边缘设备上能够更好地实现。
 
-## 格式转换
-
-## 文字水印
-
-## logo水印
-
-## 暗水印
-
-## 图片合并
-
-# 音视频处理功能
-
-## 音视频meta信息
-&ensp;&ensp;获取指定音频、视频资源的元信息，例如：宽、高、码率、帧率、文件大小、时长
-```json
-{
-          "streams":  [
-                    {
-                              "index":  0,
-                              "codec_name":  "aac",
-                              "codec_long_name":  "AAC (Advanced Audio Coding)",
-                              "profile":  "LC",
-                              "codec_type":  "audio",
-                              "codec_tag_string":  "mp4a",
-                              "codec_tag":  "0x6134706d",
-                              "sample_fmt":  "fltp",
-                              "sample_rate":  "44100",
-                              "channels":  1,
-                              "channel_layout":  "mono",
-                              "bits_per_sample":  0,
-                              "id":  "0x1",
-                              "r_frame_rate":  "0/0",
-                              "avg_frame_rate":  "0/0",
-                              "time_base":  "1/44100",
-                              "start_pts":  0,
-                              "start_time":  "0.000000",
-                              "duration_ts":  2284491,
-                              "duration":  "51.802517",
-                              "bit_rate":  "128039",
-                              "nb_frames":  "2231",
-                              "extradata_size":  2,
-                              "disposition":  {
-                                        "default":  1,
-                                        "dub":  0,
-                                        "original":  0,
-                                        "comment":  0,
-                                        "lyrics":  0,
-                                        "karaoke":  0,
-                                        "forced":  0,
-                                        "hearing_impaired":  0,
-                                        "visual_impaired":  0,
-                                        "clean_effects":  0,
-                                        "attached_pic":  0,
-                                        "timed_thumbnails":  0,
-                                        "captions":  0,
-                                        "descriptions":  0,
-                                        "metadata":  0,
-                                        "dependent":  0,
-                                        "still_image":  0
-                              },
-                              "tags":  {
-                                        "creation_time":  "2024-02-23T13:46:34.000000Z",
-                                        "language":  "eng",
-                                        "handler_name":  "SoundHandle",
-                                        "vendor_id":  "[0][0][0][0]"
-                              }
-                    },
-                    {
-                              "index":  1,
-                              "codec_name":  "h264",
-                              "codec_long_name":  "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10",
-                              "profile":  "Constrained Baseline",
-                              "codec_type":  "video",
-                              "codec_tag_string":  "avc1",
-                              "codec_tag":  "0x31637661",
-                              "width":  1080,
-                              "height":  1920,
-                              "coded_width":  1080,
-                              "coded_height":  1920,
-                              "closed_captions":  0,
-                              "film_grain":  0,
-                              "has_b_frames":  0,
-                              "pix_fmt":  "yuv420p",
-                              "level":  40,
-                              "color_range":  "tv",
-                              "color_space":  "bt709",
-                              "color_transfer":  "bt709",
-                              "color_primaries":  "bt709",
-                              "chroma_location":  "left",
-                              "field_order":  "progressive",
-                              "refs":  1,
-                              "is_avc":  "true",
-                              "nal_length_size":  "4",
-                              "id":  "0x2",
-                              "r_frame_rate":  "120/1",
-                              "avg_frame_rate":  "27405000/2324909",
-                              "time_base":  "1/90000",
-                              "start_pts":  0,
-                              "start_time":  "0.000000",
-                              "duration_ts":  4649818,
-                              "duration":  "51.664644",
-                              "bit_rate":  "6153719",
-                              "bits_per_raw_sample":  "8",
-                              "nb_frames":  "609",
-                              "extradata_size":  33,
-                              "disposition":  {
-                                        "default":  1,
-                                        "dub":  0,
-                                        "original":  0,
-                                        "comment":  0,
-                                        "lyrics":  0,
-                                        "karaoke":  0,
-                                        "forced":  0,
-                                        "hearing_impaired":  0,
-                                        "visual_impaired":  0,
-                                        "clean_effects":  0,
-                                        "attached_pic":  0,
-                                        "timed_thumbnails":  0,
-                                        "captions":  0,
-                                        "descriptions":  0,
-                                        "metadata":  0,
-                                        "dependent":  0,
-                                        "still_image":  0
-                              },
-                              "tags":  {
-                                        "creation_time":  "2024-02-23T13:46:34.000000Z",
-                                        "language":  "eng",
-                                        "handler_name":  "VideoHandle",
-                                        "vendor_id":  "[0][0][0][0]"
-                              }
-                    }
-          ],
-          "format":  {
-                    "filename":  "1gO0elRuVp8xPw2wvIP3VwZx3Zo.mp4",
-                    "nb_streams":  2,
-                    "nb_programs":  0,
-                    "format_name":  "mov,mp4,m4a,3gp,3g2,mj2",
-                    "format_long_name":  "QuickTime / MOV",
-                    "start_time":  "0.000000",
-                    "duration":  "51.802500",
-                    "size":  "40591710",
-                    "bit_rate":  "6268687",
-                    "probe_score":  100,
-                    "tags":  {
-                              "major_brand":  "mp42",
-                              "minor_version":  "0",
-                              "compatible_brands":  "isommp42",
-                              "creation_time":  "2024-02-23T13:46:34.000000Z",
-                              "com.android.version":  "12"
-                    }
-          }
-}
-```
-
-
-## 视频转码
-
-## 水印转码
-
-## 超分
-
-## 截帧
-
-## 超清
-
-## 人像增强
+### 7. **AIGC（2023年-至今）：**
+&ensp;&ensp;刚过去的2023年，aigc爆火：文生图、图生图、文生视频等等，其底层技术架构体系，依旧还是：云端图片、视频计算体系。
+总体而言，云端图片、视频处理的发展历程是一个由基础计算到深度学习，再到整合多媒体服务，并涉及边缘计算和隐私保护的过程。未来，随着技术的不断进步，云端图片视频处理将在更多领域发挥作用，为用户提供更加强大和智能的服务。
