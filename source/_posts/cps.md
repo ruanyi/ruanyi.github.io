@@ -217,7 +217,7 @@ tags: cloud process sys
           }
 }
 ```
-生成上面的meta信息，底层使用的算法是ffprobe
+生成上面的meta信息，底层使用的算法是ffprobe，命令行如下：
 ```
 ffprobe -v quiet -print_format json -show_format -show_streams -loglevel error source.mp4
 ```
