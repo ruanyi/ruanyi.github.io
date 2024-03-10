@@ -3,10 +3,10 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: 你的过去造就了你的现在，你的现在决定了你的未来！！
-subtitle: '加油!'
+title: 朝花夕拾!
+subtitle: ''
 description: 'rls'
-keywords: '朝花夕拾'
+keywords:
 author: ruanyi
 language: zh-CN
 timezone: Asia/Shanghai
@@ -81,6 +81,10 @@ date_format: YYYY-MM-DD
 time_format: HH:mm:ss
 ## updated_option supports 'mtime', 'date', 'empty'
 updated_option: 'mtime'
+
+lazyload:
+  enable: true
+  loadingImg: /img/loading.gif
 
 # Pagination
 ## Set per_page to 0 to disable pagination
