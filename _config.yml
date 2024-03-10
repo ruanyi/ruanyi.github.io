@@ -109,6 +109,6 @@ theme: butterfly
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
-  type: 'git'
-  repository: https://github.com/ruanyi/ruanyi.github.io.git
-  branch: master
+  type: ''
+  repository:
+  branch:
