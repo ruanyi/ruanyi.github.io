@@ -8,8 +8,8 @@ subtitle: '加油!'
 description: 'rls'
 keywords: '朝花夕拾'
 author: ruanyi
-language: en
-timezone: ''
+language: zh-CN
+timezone: Asia/Shanghai
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
@@ -105,4 +105,6 @@ theme: butterfly
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
-  type: ''
+  type: 'git'
+  repository: https://github.com/ruanyi/ruanyi.github.io.git
+  branch: master
