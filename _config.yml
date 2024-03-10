@@ -13,9 +13,12 @@ timezone: Asia/Shanghai
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
-url: https://ruanyi.github.io
-permalink: :year/:month/:day/:title/
-permalink_defaults:
+url: https://ruanyi.github.io.git
+permalink: posts/:abbrlink.html
+abbrlink:
+  alg: crc32
+  rep: hex
+  drafts: false
 pretty_urls:
   trailing_index: true # Set to false to remove trailing 'index.html' from permalinks
   trailing_html: true # Set to false to remove trailing '.html' from permalinks
@@ -109,6 +112,6 @@ theme: butterfly
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
-  type: ''
-  repository:
-  branch:
+  type: git
+  repository: https://github.com/ruanyi/ruanyi.github.io.git
+  branch: main
