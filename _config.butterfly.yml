@@ -690,7 +690,7 @@ canvas_fluttering_ribbon:
 # canvas_nest
 # https://github.com/hustcc/canvas-nest.js
 canvas_nest:
-  enable: false
+  enable: true
   color: '0,0,255' #color of lines, default: '0,0,0'; RGB values: (R,G,B).(note: use ',' to separate.)
   opacity: 0.7 # the opacity of line (0~1), default: 0.5.
   zIndex: -1 # z-index property of the background, default: -1.
@@ -917,9 +917,35 @@ css_prefix: true
 # 插入代码到头部 </head> 之前 和 底部 </body> 之前
 inject:
   head:
-  # - <link rel="stylesheet" href="/xxx.css">
+    ## 星空背景
+    - <link rel="stylesheet" href="/css/universe.css">
   bottom:
-  # - <script src="xxxx"></script>
+    # 星空背景
+    - <canvas id="universe"></canvas>
+    - <script defer src="/js/universe.js"></script>
+    - <script src="/js/sun_moon.js" async></script>
+
+# electric_clock
+# see https://blog.anheyu.com/posts/fc18.html
+electric_clock:
+  enable: true # 开关
+  priority: 5 #过滤器优先权
+  enable_page: all # 应用页面
+  exclude:
+  # - /posts/
+  # - /about/
+  layout: # 挂载容器类型
+    type: class
+    name: sticky_layout
+    index: 0
+  loading: https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/loading.gif #加载动画自定义
+  clock_css: https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/clock.min.css
+  clock_js: https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/clock.min.js
+  ip_api: https://widget.qweather.net/simple/static/js/he-simple-common.js?v=2.0
+  qweather_key: e6a79dfc143a4aec961f9de5519f73e0 # 和风天气key
+  gaud_map_key: a6c7f819e77cf77621fce4a9cbc5d096 # 高得地图web服务key
+  default_rectangle: false # 开启后将一直显示rectangle位置的天气，否则将获取访问者的地理位置与天气
+  rectangle: 112.982279,28.19409 # 获取访问者位置失败时会显示该位置的天气，同时该位置为开启default_rectangle后的位置
 
 # CDN
 # Don't modify the following settings unless you know how they work
