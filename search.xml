@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>多云元数据服务</title>
+      <link href="/posts/87696e09.html"/>
+      <url>/posts/87696e09.html</url>
+      
+        <content type="html"><![CDATA[<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>如前文所述，想要搭建一套云处理体系，有很多配置需要CRUD，因此，需要一套元数据配置服务，方便存储 or 读取配置，以便做下一步业务逻辑。</p><h1 id="功能梳理"><a href="#功能梳理" class="headerlink" title="功能梳理"></a>功能梳理</h1><table><thead><tr><th>功能点</th><th>说明</th><th>备注</th></tr></thead><tbody><tr><td>url解析成uri</td><td>将文件url解析成cloud、bucket、key，方便在多云环境下，能够正常上传、下载文件</td><td></td></tr><tr><td>多云下的bucket关联域名</td><td>bucket 与host的关系是：一对多</td><td></td></tr><tr><td>域名打标签</td><td>任何一个域名，会关联多个标签，方便不同业务场景分发不同的域名</td><td></td></tr><tr><td>url重签</td><td>私有桶的url容易过期，需要一种方式重新对url鉴权</td><td></td></tr><tr><td>ak&#x2F;sk</td><td>bucket与ak&#x2F;sk的关系，也是一对多</td><td></td></tr></tbody></table><h1 id="库表设计"><a href="#库表设计" class="headerlink" title="库表设计"></a>库表设计</h1><h2 id="桶信息：cloud-process-bucket"><a href="#桶信息：cloud-process-bucket" class="headerlink" title="桶信息：cloud_process_bucket"></a>桶信息：cloud_process_bucket</h2><table><thead><tr><th>字段名</th><th>类型</th><th>描述</th></tr></thead><tbody><tr><td>id</td><td>long</td><td>库表id，自增</td></tr><tr><td>creator</td><td>varchar(32)</td><td>创建者</td></tr><tr><td>modifier</td><td>varchar(32)</td><td>修改者</td></tr><tr><td>create_time</td><td>datetime</td><td>创建时间</td></tr><tr><td>modify_time</td><td>datetime</td><td>修改时间</td></tr><tr><td>cloud</td><td>varchar(32)</td><td>哪个云</td></tr><tr><td>bucket_name</td><td>varchar(32)</td><td>桶名称</td></tr><tr><td>region</td><td>varchar(32)</td><td>归属哪个区域</td></tr><tr><td>owner</td><td>varchar(128)</td><td>业务方</td></tr><tr><td>remark</td><td>varchar(256)</td><td>备注信息</td></tr></tbody></table><h2 id="桶鉴权：cloud-process-bucket-auth"><a href="#桶鉴权：cloud-process-bucket-auth" class="headerlink" title="桶鉴权：cloud_process_bucket_auth"></a>桶鉴权：cloud_process_bucket_auth</h2><table><thead><tr><th>字段名</th><th>类型</th><th>描述</th></tr></thead><tbody><tr><td>id</td><td>long</td><td>库表id，自增</td></tr><tr><td>create_time</td><td>datetime</td><td>创建时间</td></tr><tr><td>modify_time</td><td>datetime</td><td>修改时间</td></tr><tr><td>bucket_id</td><td>long</td><td>关联id</td></tr><tr><td>ak</td><td>varchar(32)</td><td>ak</td></tr><tr><td>sk</td><td>varchar(32)</td><td>sk</td></tr></tbody></table><h2 id="桶域名：cloud-process-bucket-domain"><a href="#桶域名：cloud-process-bucket-domain" class="headerlink" title="桶域名：cloud_process_bucket_domain"></a>桶域名：cloud_process_bucket_domain</h2><table><thead><tr><th>字段名</th><th>类型</th><th>描述</th></tr></thead><tbody><tr><td>id</td><td>long</td><td>库表id，自增</td></tr><tr><td>create_time</td><td>datetime</td><td>创建时间</td></tr><tr><td>modify_time</td><td>datetime</td><td>修改时间</td></tr><tr><td>bucket_id</td><td>long</td><td>关联id</td></tr><tr><td>host</td><td>varchar(128)</td><td>域名</td></tr><tr><td>tags</td><td>varchar(256)</td><td>标签</td></tr></tbody></table>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> cloud bucket meta </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>打造千万dau的社区之旅</title>
       <link href="/posts/131e32a.html"/>
       <url>/posts/131e32a.html</url>
