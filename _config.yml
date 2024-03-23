@@ -115,3 +115,9 @@ deploy:
   type: git
   repository: https://github.com/ruanyi/ruanyi.github.io.git
   branch: main
+
+# 站点地图
+sitemap:
+  path: sitemap.xml
+baidusitemap:
+  path: baidusitemap.xml
