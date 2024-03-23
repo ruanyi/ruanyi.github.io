@@ -18,7 +18,7 @@ $(document).ready(function () {
     AV.init({
         appId: "he99ycQ6womrKQjlkNeMULjB-gzGzoHsz",
         appKey: "PKJp1vvEwXF2e7oUqNQbxm5U",
-        serverURL: "HxTPzMzpap093KbFE96Y3uUL"
+        serverURL: "https://he99ycq6.lc-cn-n1-ayaqc.com"
     });
     var dianzans = [];
     var hrefs = [];
