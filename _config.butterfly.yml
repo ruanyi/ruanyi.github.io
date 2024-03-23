@@ -16,10 +16,10 @@ menu:
     归档: /archives/ || fas fa-archive
   生活 || fas fa-list:
     音乐: /music/ || fas fa-music
-    相册: /photos/ || fa fa-camera-retro
+    相册: /album/ || fa fa-camera-retro
     电影: /movies/ || fas fa-video
   友链: /links/ || fas fa-link
-  留言板: /comment/ || fa fa-paper-plane
+  留言板: /comments/ || fa fa-paper-plane
   关于: /about/ || fas fa-heart
 
 # Code Blocks (代碼相關)
@@ -99,8 +99,8 @@ error_img:
 
 # A simple 404 page
 error_404:
-  enable: false
-  subtitle: 'Page Not Found'
+  enable: true
+  subtitle: '页面没有找到'
   background: https://i.loli.net/2020/05/19/aKOcLiyPl2JQdFD.png
 
 post_meta:
@@ -198,9 +198,9 @@ post_pagination: 1
 
 # Displays outdated notice for a post (文章過期提醒)
 noticeOutdate:
-  enable: false
+  enable: true
   style: flat # style: simple/flat
-  limit_day: 500 # When will it be shown
+  limit_day: 365 # When will it be shown
   position: top # position: top/bottom
   message_prev: It has been
   message_next: days since the last update, the content of the article may be outdated.
@@ -332,12 +332,12 @@ darkmode:
 rightside_scroll_percent: false
 
 # Don't modify the following settings unless you know how they work (非必要請不要修改 )
-# Choose: readmode,translate,darkmode,hideAside,toc,chat,comment
+# Choose: readmode,translate,darkmode,hideAside,toc,chat,comments
 # Don't repeat 不要重複
 rightside_item_order:
   enable: false
   hide: # readmode,translate,darkmode,hideAside
-  show: # toc,chat,comment
+  show: # toc,chat,comments
 
 # Math (數學)
 # --------------------------------------
@@ -408,12 +408,12 @@ comments:
   # Up to two comments system, the first will be shown as default
   # Choose: Disqus/Disqusjs/Livere/Gitalk/Valine/Waline/Utterances/Facebook Comments/Twikoo/Giscus/Remark42/Artalk
   use: # Valine,Disqus
-  text: true # Display the comment name next to the button
-  # lazyload: The comment system will be load when comment element enters the browser's viewport.
-  # If you set it to true, the comment count will be invalid
+  text: true # Display the comments name next to the button
+  # lazyload: The comments system will be load when comments element enters the browser's viewport.
+  # If you set it to true, the comments count will be invalid
   lazyload: false
-  count: false # Display comment count in post's top_img
-  card_post_count: false # Display comment count in Home Page
+  count: false # Display comments count in post's top_img
+  card_post_count: false # Display comments count in Home Page
 
 # disqus
 # https://disqus.com/
@@ -455,7 +455,7 @@ valine:
   visitor: false
   option:
 
-# waline - A simple comment system with backend support fork from Valine
+# waline - A simple comments system with backend support fork from Valine
 # https://waline.js.org/
 waline:
   serverURL: # Waline server address url
@@ -948,6 +948,29 @@ electric_clock:
   gaud_map_key: a6c7f819e77cf77621fce4a9cbc5d096 # 高得地图web服务key
   default_rectangle: false # 开启后将一直显示rectangle位置的天气，否则将获取访问者的地理位置与天气
   rectangle: 112.982279,28.19409 # 获取访问者位置失败时会显示该位置的天气，同时该位置为开启default_rectangle后的位置
+
+#envelope_comment
+#seehttps://akilar.top/posts/e2d3c450/
+envelope_comment:
+  enable: true #控制开关
+  custom_pic:
+    cover: https://npm.elemecdn.com/hexo-butterfly-envelope/lib/violet.jpg #信笺头部图片
+    line: https://npm.elemecdn.com/hexo-butterfly-envelope/lib/line.png #信笺底部图片
+    beforeimg: https://npm.elemecdn.com/hexo-butterfly-envelope/lib/before.png # 信封前半部分
+    afterimg: https://npm.elemecdn.com/hexo-butterfly-envelope/lib/after.png # 信封后半部分
+  message: #信笺正文，多行文本，写法如下
+    - 有什么想问的？
+    - 有什么想说的？
+    - 有什么想吐槽的？
+    - 哪怕是有什么想吃的，都可以告诉我哦~
+  bottom: 自动书记人偶竭诚为您服务！ #仅支持单行文本
+  height: #1024px，信封划出的高度
+  path: #【可选】comments 的路径名称。默认为 comments，生成的页面为 comments/index.html
+  front_matter: #【可选】comments页面的 front_matter 配置
+    title: 留言板
+    comments: true
+    top_img: false
+    type: envelope
 
 # CDN
 # Don't modify the following settings unless you know how they work
