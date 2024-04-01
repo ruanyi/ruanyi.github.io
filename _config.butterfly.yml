@@ -16,7 +16,7 @@ menu:
     归档: /archives/ || fas fa-archive
   生活 || fas fa-list:
     音乐: /music/ || fas fa-music
-    相册: /album/ || fa fa-camera-retro
+    相册: /album/ || fas fa-images
     电影: /movies/ || fas fa-video
   友链: /links/ || fas fa-link
   留言板: /comments/ || fa fa-paper-plane
@@ -150,7 +150,7 @@ copy:
 # toc (目錄)
 toc:
   post: true
-  page: false
+  page: true
   number: true
   expand: false
   style_simple: false # for post
@@ -210,7 +210,7 @@ noticeOutdate:
 footer:
   owner:
     enable: true
-    since: 2020
+    since: 2023
   custom_text:
   copyright: true # Copyright of theme and framework
 
@@ -329,7 +329,7 @@ darkmode:
   end: # 22
 
 # show scroll percent in scroll-to-top button
-rightside_scroll_percent: false
+rightside_scroll_percent: true
 
 # Don't modify the following settings unless you know how they work (非必要請不要修改 )
 # Choose: readmode,translate,darkmode,hideAside,toc,chat,comments
