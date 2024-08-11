@@ -1,13 +1,13 @@
-<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>任务编排 | 朝花夕拾!</title><meta name="author" content="ruanyi"><meta name="copyright" content="ruanyi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="背景在实际应用中，业务逻辑往往涉及多个步骤和模块，需要协同工作才能完成整体任务。而任务编排通过将多个函数组织成有序的执行流程，使得开发者能够更自然地表达和管理复杂的业务逻辑。这种能力，业界称之为：工作流（ServerlessWorkflow）or dag引擎（本文无特殊说明，用dag引擎代表）。举些例子： 切片加速流程图 转码流程图 以上业务流程，可以通过代码硬编码写死，也可以通过dag引擎来编排">
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>任务编排 | 朝花夕拾!</title><meta name="author" content="ruanyi"><meta name="copyright" content="ruanyi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="背景在实际媒体处理的业务场景中，复杂业务逻辑往往涉及多个步骤、多个模块、多个原子化动作，组合、协同工作，才能顺利完成。而任务编排通过将多个函数组织成有序的执行流程，使得开发者能够更自然地表达和管理复杂的业务逻辑。这种能力，业界称之为：工作流(Workflow）or dag引擎（本文无特殊说明，用dag引擎代表）。举些例子： 图片计算流程图 切片加速流程图 转码流程图 概要分析数据流向 -&gt;">
 <meta property="og:type" content="article">
 <meta property="og:title" content="任务编排">
 <meta property="og:url" content="https://ruanyi.github.io.git/posts/394f6975.html">
 <meta property="og:site_name" content="朝花夕拾!">
-<meta property="og:description" content="背景在实际应用中，业务逻辑往往涉及多个步骤和模块，需要协同工作才能完成整体任务。而任务编排通过将多个函数组织成有序的执行流程，使得开发者能够更自然地表达和管理复杂的业务逻辑。这种能力，业界称之为：工作流（ServerlessWorkflow）or dag引擎（本文无特殊说明，用dag引擎代表）。举些例子： 切片加速流程图 转码流程图 以上业务流程，可以通过代码硬编码写死，也可以通过dag引擎来编排">
+<meta property="og:description" content="背景在实际媒体处理的业务场景中，复杂业务逻辑往往涉及多个步骤、多个模块、多个原子化动作，组合、协同工作，才能顺利完成。而任务编排通过将多个函数组织成有序的执行流程，使得开发者能够更自然地表达和管理复杂的业务逻辑。这种能力，业界称之为：工作流(Workflow）or dag引擎（本文无特殊说明，用dag引擎代表）。举些例子： 图片计算流程图 切片加速流程图 转码流程图 概要分析数据流向 -&gt;">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://ruanyi.github.io.git/img/avatar.png">
 <meta property="article:published_time" content="2024-02-27T13:10:21.000Z">
-<meta property="article:modified_time" content="2024-03-23T06:10:48.407Z">
+<meta property="article:modified_time" content="2024-08-11T10:11:25.910Z">
 <meta property="article:author" content="ruanyi">
 <meta property="article:tag" content="dag、Serverless Workflow、工作流">
 <meta name="twitter:card" content="summary">
@@ -56,7 +56,7 @@
   isHome: false,
   isHighlightShrink: false,
   isToc: true,
-  postUpdate: '2024-03-23 14:10:48'
+  postUpdate: '2024-08-11 18:11:25'
 }</script><script>(win=>{
       win.saveToLocal = {
         set: (key, value, ttl) => {
@@ -192,53 +192,59 @@
     rightside: true,
   },
   autoDarkmode: false
-}</script><!-- hexo injector head_end start --><link rel="stylesheet" href="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/clock.min.css" /><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/loading.gif" data-original="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">11</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">10</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/album/"><i class="fa-fw fas fa-images"></i><span> 相册</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="朝花夕拾!"><span class="site-name">朝花夕拾!</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/album/"><i class="fa-fw fas fa-images"></i><span> 相册</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">任务编排</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-02-27T13:10:21.000Z" title="发表于 2024-02-27 21:10:21">2024-02-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-03-23T06:10:48.407Z" title="更新于 2024-03-23 14:10:48">2024-03-23</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%AA%92%E4%BD%93%E5%A4%84%E7%90%86/">媒体处理</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>4分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="任务编排"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|&nbsp<span class="post-meta-dianzan"><a class="dianzan" href="javascript:void(0)" onclick="dianzan()"><i class="fas fa-thumbs-up"></i></a><span class="post-meta-label"> 点赞:</span><span class="dianzan-count">0</span></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>在实际应用中，业务逻辑往往涉及多个步骤和模块，需要协同工作才能完成整体任务。而任务编排通过将多个函数组织成有序的执行流程，使得开发者能够更自然地表达和管理复杂的业务逻辑。这种能力，业界称之为：工作流（Serverless<br>Workflow）or dag引擎（本文无特殊说明，用dag引擎代表）。举些例子：</p>
+}</script><!-- hexo injector head_end start --><link rel="stylesheet" href="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/clock.min.css" /><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/loading.gif" data-original="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">13</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/album/"><i class="fa-fw fas fa-images"></i><span> 相册</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="朝花夕拾!"><span class="site-name">朝花夕拾!</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/album/"><i class="fa-fw fas fa-images"></i><span> 相册</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">任务编排</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-02-27T13:10:21.000Z" title="发表于 2024-02-27 21:10:21">2024-02-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-08-11T10:11:25.910Z" title="更新于 2024-08-11 18:11:25">2024-08-11</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%AA%92%E4%BD%93%E5%A4%84%E7%90%86/">媒体处理</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>7分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="任务编排"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|&nbsp<span class="post-meta-dianzan"><a class="dianzan" href="javascript:void(0)" onclick="dianzan()"><i class="fas fa-thumbs-up"></i></a><span class="post-meta-label"> 点赞:</span><span class="dianzan-count">0</span></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>在实际媒体处理的业务场景中，复杂业务逻辑往往涉及多个步骤、多个模块、多个原子化动作，组合、协同工作，才能顺利完成。而任务编排通过将多个函数组织成有序的执行流程，使得开发者能够更自然地表达和管理复杂的业务逻辑。这种能力，业界称之为：工作流(<br>Workflow）or dag引擎（本文无特殊说明，用dag引擎代表）。举些例子：</p>
+<h2 id="图片计算流程图"><a href="#图片计算流程图" class="headerlink" title="图片计算流程图"></a>图片计算流程图</h2><p><img src="/img/loading.gif" data-original="/images/thumb_img_meta.png"></p>
 <h2 id="切片加速流程图"><a href="#切片加速流程图" class="headerlink" title="切片加速流程图"></a>切片加速流程图</h2><p><img src="/img/loading.gif" data-original="/images/slice_dag_1.png"></p>
 <h2 id="转码流程图"><a href="#转码流程图" class="headerlink" title="转码流程图"></a>转码流程图</h2><p><img src="/img/loading.gif" data-original="/images/tc_dag_2.png"></p>
-<p>以上业务流程，可以通过代码硬编码写死，也可以通过dag引擎来编排业务。它们之间的优缺点如下：</p>
-<table>
+<h1 id="概要分析"><a href="#概要分析" class="headerlink" title="概要分析"></a>概要分析</h1><h2 id="数据流向-任务编排"><a href="#数据流向-任务编排" class="headerlink" title="数据流向 -&gt; 任务编排"></a>数据流向 -&gt; 任务编排</h2><p>从数据流向来看，分为：</p>
+<p>1、直线型pipeline：一个步骤的输出直接传递给下一个步骤的输入。</p>
+<p>2、dag型pipeline：多个步骤的输出，当做下一个步骤的输入 + 一个步骤的输出，当做多个步骤的输入。</p>
+<h2 id="同步-or-异步"><a href="#同步-or-异步" class="headerlink" title="同步 or 异步"></a>同步 or 异步</h2><p>同步处理，好理解，业务逻辑在同一个函数里执行完毕。这边重点描述：异步处理，对于任意一个节点而言，如之前所讲，因图片、视频重计算，费时，导致无法100%都能同步等待，很多：只能异步处理，等待回调。</p>
+<p>因此，所实现的任务编排，需支持：异步回调风格。</p>
+<h2 id="并行调度"><a href="#并行调度" class="headerlink" title="并行调度"></a>并行调度</h2><p>如文档：<a href="/posts/4d3edad6.html">视频切片并行加速</a>所述：视频处理加速方法之一，依赖于：并行调度，对于：任务编排而言，相当于：并行处理节点的输入、输出个数，并非它的父亲节点个数<br>+孩子节点个数。也就是说：有一批无法画出的segment节点，需由任务编排来描述。</p>
+<h2 id="执行时间"><a href="#执行时间" class="headerlink" title="执行时间"></a>执行时间</h2><p>基于成本的考量，部分任务，业务侧虽然已经触发，但是，可允许“24”个小时再回调，因此，节点的执行，分为：准实时执行 + 延时执行。</p>
+<h2 id="业界情况"><a href="#业界情况" class="headerlink" title="业界情况"></a>业界情况</h2><table>
 <thead>
 <tr>
-<th>类别</th>
-<th>优点</th>
-<th>缺点</th>
-<th>备注</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>硬编码写死</td>
-<td>1、简单、快速<br/>2、系统部署成本低</td>
-<td>1、业务发展起来后，代码非常变成屎山，难以维护<br>2、</td>
-<td></td>
-</tr>
-<tr>
-<td>dag引擎编排</td>
-<td>1、专业人员干专有事<br/>2、对写算子的人员要求低，一旦熟悉后，能够快速落地业务</td>
-<td>1、dag引擎难于稳定下来<br/>2、对dag引擎的人员成本要求高 + 系统部署成本高<br/></td>
-<td></td>
-</tr>
-</tbody></table>
-<p>备注：业界一搜一大把，争议挺多，本文仅补充以下3点：<br>1、dag引擎非新鲜事物，发展了20几年了，无数人写了无数多的0~1的引擎，但是，至今无一人将dag引擎一统“天下”（或者：公司）。<br>2、初创业务，非常不建议自建dag引擎，容易被它拖累，特别是：人力成本。<br>3、一旦产品 or 业务发展到大后期，dag引擎很容易成为成本大头，特别是：人力成本。</p>
-<h1 id="架构设计"><a href="#架构设计" class="headerlink" title="架构设计"></a>架构设计</h1><p>设计一款满足：云处理场景下的工作流引擎，包括以下模块：（先凑合着看，后续再补充）<br><img src="/img/loading.gif" data-original="/images/dag_1.png"></p>
-<h2 id="节点设计"><a href="#节点设计" class="headerlink" title="节点设计"></a>节点设计</h2><table>
-<thead>
-<tr>
-<th>节点类型</th>
+<th>业界产品</th>
 <th>作用</th>
 <th>功能说明</th>
 <th>备注</th>
 </tr>
 </thead>
 <tbody><tr>
+<td>Celery</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Dask</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<h1 id="架构设计"><a href="#架构设计" class="headerlink" title="架构设计"></a>架构设计</h1><p>设计一款满足：媒体处理场景下的工作流引擎，包括以下模块：<br><img src="/img/loading.gif" data-original="/images/dag_1.png"></p>
+<h2 id="节点设计"><a href="#节点设计" class="headerlink" title="节点设计"></a>节点设计</h2><table>
+<thead>
+<tr>
+<th>节点类型</th>
+<th>作用</th>
+<th>执行次数</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
 <td>开始节点</td>
 <td>执行dag引擎的开始动作</td>
-<td></td>
+<td>执行一次</td>
 <td></td>
 </tr>
 <tr>
 <td>结束节点</td>
 <td>执行dag引擎后的结束动作</td>
-<td></td>
+<td>执行N次</td>
 <td></td>
 </tr>
 <tr>
@@ -248,37 +254,43 @@
 <td></td>
 </tr>
 <tr>
-<td>同步处理节点</td>
-<td>短时间之内即可处理完</td>
+<td>同步脚本节点</td>
+<td>同步等待处理结果，短时间之内即可处理完，因此，同步等待结果</td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td>异步处理节点</td>
-<td>处理时长长，无法同步等待，后续回调，找到对应的执行节点继续处理</td>
+<td>异步脚本节点</td>
+<td>处理时长太长，无法同步等待，后续回调，找到对应的执行节点继续处理</td>
 <td></td>
 <td></td>
 </tr>
 <tr>
 <td>并行节点</td>
-<td>切片后，有多个结果，需并行处理</td>
+<td>某个节点，有多个输出结果，下一个节点需并行处理</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>子业务流节点</td>
+<td>某个节点，有多个输出结果，下一个节点需并行处理</td>
 <td></td>
 <td></td>
 </tr>
 <tr>
 <td>回调节点</td>
-<td>异步回调，通知业务方处理结果</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>脚本节点</td>
-<td>书写脚本的节点，提供灵活插入脚本口子</td>
-<td></td>
-<td></td>
+<td>回调通知业务方处理结果</td>
+<td>就算没有执行到，也得执行一次</td>
+<td>不建议：设计回调节点</td>
 </tr>
 </tbody></table>
-<h2 id="执行引擎"><a href="#执行引擎" class="headerlink" title="执行引擎"></a>执行引擎</h2><h2 id="任务追踪"><a href="#任务追踪" class="headerlink" title="任务追踪"></a>任务追踪</h2><table>
+<p>特别说明：</p>
+<p>1、回调节点，不太建议：设计到DAG引擎的节点中。因为：回调节点比较特殊，它必须执行一次 or<br>多次，就算：节点执行失败，超时卡在某个节点了，因此，更建议：设置到dag引擎外，接口协议中。</p>
+<p>2、当然了，如果需支持：多种类型的回调，则可结合起来看。</p>
+<h2 id="重试机制"><a href="#重试机制" class="headerlink" title="重试机制"></a>重试机制</h2><p>如之前描述：由于媒体处理，重cpu or gpu计算，非常容易卡死 + 不涉及事务，执行多次，理论上，是同样的结果，因此，需设计重试机制：</p>
+<p>严格意义上讲：只存在：节点重试，并没有任务重试，对于业务方而言，任务重试，相当于重新触发新的任务，只是再通知业务方时，需使用同一个：唯一键，来告知业务方结果。</p>
+<p>重试类型 | 说明 | 备注 |<br>——|——————————————|—–|—-|<br>超时重试 |超过一定时间后，重新触发执行，一般情况下，由CB体系触发 | |<br>失败重试 | 失败后，自动重试，支持：代码自动重试 + cb体系触发重试 + 手动触发重试 | |</p>
+<h2 id="任务追踪"><a href="#任务追踪" class="headerlink" title="任务追踪"></a>任务追踪</h2><table>
 <thead>
 <tr>
 <th>名词</th>
@@ -317,8 +329,51 @@
 <td>可使用UUID生成唯一的：trace_id</td>
 </tr>
 </tbody></table>
-<h2 id="执行计划优化"><a href="#执行计划优化" class="headerlink" title="执行计划优化"></a>执行计划优化</h2><p>业务dag与代码执行dag往往有差异。</p>
-<h2 id="dag剪枝"><a href="#dag剪枝" class="headerlink" title="dag剪枝"></a>dag剪枝</h2><h1 id="mysql库表设计"><a href="#mysql库表设计" class="headerlink" title="mysql库表设计"></a>mysql库表设计</h1><h2 id="任务表：cloud-process-task"><a href="#任务表：cloud-process-task" class="headerlink" title="任务表：cloud_process_task"></a>任务表：cloud_process_task</h2><table>
+<h2 id="执行计划优化"><a href="#执行计划优化" class="headerlink" title="执行计划优化"></a>执行计划优化</h2><p>业务dag与代码执行dag往往有差异。因此，需要对：dag进行剪枝。</p>
+<h1 id="库表设计"><a href="#库表设计" class="headerlink" title="库表设计"></a>库表设计</h1><table>
+<thead>
+<tr>
+<th>表名</th>
+<th>作用</th>
+<th>id生成策略</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Pipeline表</td>
+<td>描述业务所期许的：步骤集 + 流程</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>task表</td>
+<td>记录一次任务的执行过程，记录任务的请求参数 + 结果</td>
+<td>可使用UUID生成唯一的：task_id</td>
+<td></td>
+</tr>
+<tr>
+<td>event表</td>
+<td>记录节点事件的执行过程</td>
+<td>event_id &#x3D; task_id + “_” + node_name</td>
+<td></td>
+</tr>
+<tr>
+<td>segment表</td>
+<td>记录节点分片的执行过程</td>
+<td>segment_id &#x3D; event_id + “_” + order</td>
+<td></td>
+</tr>
+<tr>
+<td>trace表</td>
+<td>记录所有cpu、gpu计算的入参 + 出参</td>
+<td>可使用UUID生成唯一的：trace_id，也可由第三方计算服务生成</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>再次说明：<br>1、task + event + segment + trace，记录的是dag引擎的执行过程中的临时数据，执行完毕后，除了问题分析外，作用不太大。<br>2、不一定：非得使用mysql来存储数据，也可以采用：redis来存储数据。</p>
+<h2 id="数据清理"><a href="#数据清理" class="headerlink" title="数据清理"></a>数据清理</h2><p>基于成本的考量，这些数据该如何自动过期呢？</p>
+<p>方案1：mysql中的ab库。<br>方案2：mysql中，启一定时任务，定时删除过期的数据。</p>
+<h2 id="Pipeline，协议表，采用：文档模型"><a href="#Pipeline，协议表，采用：文档模型" class="headerlink" title="Pipeline，协议表，采用：文档模型"></a>Pipeline，协议表，采用：文档模型</h2><table>
 <thead>
 <tr>
 <th>字段名</th>
@@ -332,14 +387,58 @@
 <td>库表id，自增</td>
 </tr>
 <tr>
-<td>creator</td>
-<td>varchar(32)</td>
-<td>创建者</td>
+<td>create_time</td>
+<td>datetime</td>
+<td>创建时间</td>
 </tr>
 <tr>
-<td>modifier</td>
-<td>varchar(32)</td>
-<td>修改者</td>
+<td>modify_time</td>
+<td>datetime</td>
+<td>修改时间</td>
+</tr>
+<tr>
+<td>config_name</td>
+<td>varchar(64)</td>
+<td>英文名字</td>
+</tr>
+<tr>
+<td>config_version</td>
+<td>varchar(12)</td>
+<td>版本号</td>
+</tr>
+<tr>
+<td>last_version</td>
+<td>int(1)</td>
+<td>0：最新版 <br/> 1、非最新版<br/></td>
+</tr>
+<tr>
+<td>config_meta</td>
+<td>text</td>
+<td>json config</td>
+</tr>
+<tr>
+<td>config_type</td>
+<td>int(1)</td>
+<td>1:规则引擎 <br/>2:dag引擎 <br/>3、指令</td>
+</tr>
+<tr>
+<td>config_status</td>
+<td>int(1)</td>
+<td>0：正式运行 <br/> 2、草稿<br/>9、废弃 &lt;&gt;</td>
+</tr>
+</tbody></table>
+<h2 id="运行时，任务表：cloud-process-task"><a href="#运行时，任务表：cloud-process-task" class="headerlink" title="运行时，任务表：cloud_process_task"></a>运行时，任务表：cloud_process_task</h2><table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>long</td>
+<td>库表id，自增</td>
 </tr>
 <tr>
 <td>create_time</td>
@@ -362,14 +461,19 @@
 <td>任务请求参数</td>
 </tr>
 <tr>
-<td>dag_code</td>
-<td>varchar(64)</td>
-<td>dag的标识符</td>
+<td>config_id</td>
+<td>long</td>
+<td>配置表</td>
 </tr>
 <tr>
 <td>task_result</td>
 <td>text</td>
 <td>任务结果表</td>
+</tr>
+<tr>
+<td>notify_url</td>
+<td>varchar(1024)</td>
+<td>回调关联信息</td>
 </tr>
 <tr>
 <td>total_cost</td>
@@ -382,7 +486,7 @@
 <td>0：成功 <br/>1：正在进行 <br/>9：运行失败</td>
 </tr>
 </tbody></table>
-<h2 id="事件表：cloud-process-event"><a href="#事件表：cloud-process-event" class="headerlink" title="事件表：cloud_process_event"></a>事件表：cloud_process_event</h2><table>
+<h2 id="运行时，事件表：cloud-process-event"><a href="#运行时，事件表：cloud-process-event" class="headerlink" title="运行时，事件表：cloud_process_event"></a>运行时，事件表：cloud_process_event</h2><table>
 <thead>
 <tr>
 <th>字段名</th>
@@ -394,16 +498,6 @@
 <td>id</td>
 <td>long</td>
 <td>库表id，自增</td>
-</tr>
-<tr>
-<td>creator</td>
-<td>varchar(32)</td>
-<td>创建者</td>
-</tr>
-<tr>
-<td>modifier</td>
-<td>varchar(32)</td>
-<td>修改者</td>
 </tr>
 <tr>
 <td>create_time</td>
@@ -436,6 +530,11 @@
 <td>节点名称</td>
 </tr>
 <tr>
+<td>node_type</td>
+<td>int(2)</td>
+<td>节点类型：</td>
+</tr>
+<tr>
 <td>event_status</td>
 <td>char(1)</td>
 <td>0：成功 <br/>1：正在进行 <br/>9：运行失败</td>
@@ -446,6 +545,11 @@
 <td>执行次数，大部分情况下：1次,重试次数 &#x3D; 执行次数 - 1</td>
 </tr>
 <tr>
+<td>latch_cnt</td>
+<td>int(10)</td>
+<td>当latch_cnt &#x3D;&#x3D; in_degree时，当前节点，可继续往下执行</td>
+</tr>
+<tr>
 <td>segment_cnt</td>
 <td>int(10)</td>
 <td>分片数量,0：如果没有分片，则分片数量为：0,有分片，则输入对应的分片数量</td>
@@ -453,7 +557,7 @@
 <tr>
 <td>event_result</td>
 <td>text</td>
-<td>任务结果表</td>
+<td>事件结果表</td>
 </tr>
 <tr>
 <td>total_cost</td>
@@ -461,7 +565,7 @@
 <td>事件处理总耗时</td>
 </tr>
 </tbody></table>
-<h2 id="分片表：cloud-process-segment"><a href="#分片表：cloud-process-segment" class="headerlink" title="分片表：cloud_process_segment"></a>分片表：cloud_process_segment</h2><table>
+<h2 id="运行时，分片表：cloud-process-segment"><a href="#运行时，分片表：cloud-process-segment" class="headerlink" title="运行时，分片表：cloud_process_segment"></a>运行时，分片表：cloud_process_segment</h2><table>
 <thead>
 <tr>
 <th>字段名</th>
@@ -473,16 +577,6 @@
 <td>id</td>
 <td>long</td>
 <td>库表id，自增</td>
-</tr>
-<tr>
-<td>creator</td>
-<td>varchar(32)</td>
-<td>创建者</td>
-</tr>
-<tr>
-<td>modifier</td>
-<td>varchar(32)</td>
-<td>修改者</td>
 </tr>
 <tr>
 <td>create_time</td>
@@ -515,6 +609,11 @@
 <td>关联：cloud_process_trace的trace_id</td>
 </tr>
 <tr>
+<td>segment_type</td>
+<td>int(2)</td>
+<td>正常情况下，跟它所对应的node_type一模一样</td>
+</tr>
+<tr>
 <td>exec_cnt</td>
 <td>int(10)</td>
 <td>执行次数，大部分情况下：1次,重试次数 &#x3D; 执行次数 - 1</td>
@@ -530,12 +629,18 @@
 <td>0：成功 <br/>1：正在进行 <br/>9：运行失败</td>
 </tr>
 <tr>
+<td>segment_result</td>
+<td>text</td>
+<td>分片结果表</td>
+</tr>
+<tr>
 <td>total_cost</td>
 <td>int(10)</td>
 <td>分片处理总耗时</td>
 </tr>
 </tbody></table>
-<h2 id="分片表：cloud-process-trace"><a href="#分片表：cloud-process-trace" class="headerlink" title="分片表：cloud_process_trace"></a>分片表：cloud_process_trace</h2><table>
+<h2 id="运行时，跟踪表：cloud-process-trace"><a href="#运行时，跟踪表：cloud-process-trace" class="headerlink" title="运行时，跟踪表：cloud_process_trace"></a>运行时，跟踪表：cloud_process_trace</h2><p>每请求一次，则新增一条记录，分库分表id为：task_id</p>
+<table>
 <thead>
 <tr>
 <th>字段名</th>
@@ -547,16 +652,6 @@
 <td>id</td>
 <td>long</td>
 <td>库表id，自增</td>
-</tr>
-<tr>
-<td>creator</td>
-<td>varchar(32)</td>
-<td>创建者</td>
-</tr>
-<tr>
-<td>modifier</td>
-<td>varchar(32)</td>
-<td>修改者</td>
 </tr>
 <tr>
 <td>create_time</td>
@@ -577,6 +672,11 @@
 <td>trace_id</td>
 <td>varchar(128)</td>
 <td>计算服务的跟踪id</td>
+</tr>
+<tr>
+<td>cal_type</td>
+<td>int(2)</td>
+<td>计算服务的类型</td>
 </tr>
 <tr>
 <td>trace_status</td>
@@ -609,7 +709,8 @@
 <td>分片处理总耗时</td>
 </tr>
 </tbody></table>
-<h1 id="相关痛点"><a href="#相关痛点" class="headerlink" title="相关痛点"></a>相关痛点</h1></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://ruanyi.github.io.git">ruanyi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://ruanyi.github.io.git/posts/394f6975.html">https://ruanyi.github.io.git/posts/394f6975.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://ruanyi.github.io.git" target="_blank">朝花夕拾!</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/dag%E3%80%81Serverless-Workflow%E3%80%81%E5%B7%A5%E4%BD%9C%E6%B5%81/">dag、Serverless Workflow、工作流</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/loading.gif" data-original="/img/wechat.jpg" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/loading.gif" data-original="/img/alipay.jpg" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/b37b04e8.html" title="图片处理功能集"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">图片处理功能集</div></div></a></div><div class="next-post pull-right"><a href="/posts/8e26567b.html" title="资源调度"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">资源调度</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">ruanyi</div><div class="author-info__description">Tommy Ruan</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">11</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">10</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/ruanyi"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/ruanyi" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:540728086@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">朝花夕拾</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%83%8C%E6%99%AF"><span class="toc-number">1.</span> <span class="toc-text">背景</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%87%E7%89%87%E5%8A%A0%E9%80%9F%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="toc-number">1.1.</span> <span class="toc-text">切片加速流程图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BD%AC%E7%A0%81%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="toc-number">1.2.</span> <span class="toc-text">转码流程图</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1"><span class="toc-number">2.</span> <span class="toc-text">架构设计</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%8A%82%E7%82%B9%E8%AE%BE%E8%AE%A1"><span class="toc-number">2.1.</span> <span class="toc-text">节点设计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C%E5%BC%95%E6%93%8E"><span class="toc-number">2.2.</span> <span class="toc-text">执行引擎</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E8%BF%BD%E8%B8%AA"><span class="toc-number">2.3.</span> <span class="toc-text">任务追踪</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92%E4%BC%98%E5%8C%96"><span class="toc-number">2.4.</span> <span class="toc-text">执行计划优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#dag%E5%89%AA%E6%9E%9D"><span class="toc-number">2.5.</span> <span class="toc-text">dag剪枝</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#mysql%E5%BA%93%E8%A1%A8%E8%AE%BE%E8%AE%A1"><span class="toc-number">3.</span> <span class="toc-text">mysql库表设计</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E8%A1%A8%EF%BC%9Acloud-process-task"><span class="toc-number">3.1.</span> <span class="toc-text">任务表：cloud_process_task</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8B%E4%BB%B6%E8%A1%A8%EF%BC%9Acloud-process-event"><span class="toc-number">3.2.</span> <span class="toc-text">事件表：cloud_process_event</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E7%89%87%E8%A1%A8%EF%BC%9Acloud-process-segment"><span class="toc-number">3.3.</span> <span class="toc-text">分片表：cloud_process_segment</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E7%89%87%E8%A1%A8%EF%BC%9Acloud-process-trace"><span class="toc-number">3.4.</span> <span class="toc-text">分片表：cloud_process_trace</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%9B%B8%E5%85%B3%E7%97%9B%E7%82%B9"><span class="toc-number">4.</span> <span class="toc-text">相关痛点</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/713ae57e.html" title="媒体处理开放平台">媒体处理开放平台</a><time datetime="2024-03-23T10:53:47.000Z" title="发表于 2024-03-23 18:53:47">2024-03-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/4d3edad6.html" title="视频切片并行加速">视频切片并行加速</a><time datetime="2024-03-23T04:15:13.918Z" title="发表于 2024-03-23 12:15:13">2024-03-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/87af4ad.html" title="从0到1搭建媒体处理体系">从0到1搭建媒体处理体系</a><time datetime="2024-03-23T04:15:13.917Z" title="发表于 2024-03-23 12:15:13">2024-03-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/b361174a.html" title="数据集市">数据集市</a><time datetime="2024-03-21T15:25:26.000Z" title="发表于 2024-03-21 23:25:26">2024-03-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/87696e09.html" title="多云元数据服务">多云元数据服务</a><time datetime="2024-03-17T12:12:45.000Z" title="发表于 2024-03-17 20:12:45">2024-03-17</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By ruanyi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i><a class="icon-V hidden" onclick="switchNightMode()" title="浅色和深色模式转换"></a><svg width="25" height="25" viewBox="0 0 1024 1024"></svg><use id="modeicon" xlink:href="#icon-moon"></use></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><canvas id="universe"></canvas><script defer src="/js/universe.js"></script><script src="/js/sun_moon.js" async></script><script src="//npm.elemecdn.com/leancloud-storage@4.13.1/dist/av-min.js"></script><script type="text/javascript" src="/js/dianzan.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+<h1 id="cb体系"><a href="#cb体系" class="headerlink" title="cb体系"></a>cb体系</h1><p>由于中间各个步骤，包括了大量的：cpu or gpu计算服务，非常容易卡死、奔溃，导致整体任务长时间未收到回调，因此，需要dag引擎，触发check任务状态，假设超过一定的时间阈值，重试<br>or 设置整个任务为失败。</p>
+<h2 id=""><a href="#" class="headerlink" title=""></a></h2></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://ruanyi.github.io.git">ruanyi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://ruanyi.github.io.git/posts/394f6975.html">https://ruanyi.github.io.git/posts/394f6975.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://ruanyi.github.io.git" target="_blank">朝花夕拾!</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/dag%E3%80%81Serverless-Workflow%E3%80%81%E5%B7%A5%E4%BD%9C%E6%B5%81/">dag、Serverless Workflow、工作流</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/loading.gif" data-original="/img/wechat.jpg" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/loading.gif" data-original="/img/alipay.jpg" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/b37b04e8.html" title="图片处理功能集"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">图片处理功能集</div></div></a></div><div class="next-post pull-right"><a href="/posts/8e26567b.html" title="资源调度"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">资源调度</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">ruanyi</div><div class="author-info__description">Tommy Ruan</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">13</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/ruanyi"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/ruanyi" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:540728086@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">朝花夕拾</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%83%8C%E6%99%AF"><span class="toc-number">1.</span> <span class="toc-text">背景</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%BE%E7%89%87%E8%AE%A1%E7%AE%97%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="toc-number">1.1.</span> <span class="toc-text">图片计算流程图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%87%E7%89%87%E5%8A%A0%E9%80%9F%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="toc-number">1.2.</span> <span class="toc-text">切片加速流程图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BD%AC%E7%A0%81%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="toc-number">1.3.</span> <span class="toc-text">转码流程图</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A6%82%E8%A6%81%E5%88%86%E6%9E%90"><span class="toc-number">2.</span> <span class="toc-text">概要分析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E6%B5%81%E5%90%91-%E4%BB%BB%E5%8A%A1%E7%BC%96%E6%8E%92"><span class="toc-number">2.1.</span> <span class="toc-text">数据流向 -&gt; 任务编排</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%8C%E6%AD%A5-or-%E5%BC%82%E6%AD%A5"><span class="toc-number">2.2.</span> <span class="toc-text">同步 or 异步</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B9%B6%E8%A1%8C%E8%B0%83%E5%BA%A6"><span class="toc-number">2.3.</span> <span class="toc-text">并行调度</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C%E6%97%B6%E9%97%B4"><span class="toc-number">2.4.</span> <span class="toc-text">执行时间</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%9A%E7%95%8C%E6%83%85%E5%86%B5"><span class="toc-number">2.5.</span> <span class="toc-text">业界情况</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1"><span class="toc-number">3.</span> <span class="toc-text">架构设计</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%8A%82%E7%82%B9%E8%AE%BE%E8%AE%A1"><span class="toc-number">3.1.</span> <span class="toc-text">节点设计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8D%E8%AF%95%E6%9C%BA%E5%88%B6"><span class="toc-number">3.2.</span> <span class="toc-text">重试机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E8%BF%BD%E8%B8%AA"><span class="toc-number">3.3.</span> <span class="toc-text">任务追踪</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92%E4%BC%98%E5%8C%96"><span class="toc-number">3.4.</span> <span class="toc-text">执行计划优化</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BA%93%E8%A1%A8%E8%AE%BE%E8%AE%A1"><span class="toc-number">4.</span> <span class="toc-text">库表设计</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E6%B8%85%E7%90%86"><span class="toc-number">4.1.</span> <span class="toc-text">数据清理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Pipeline%EF%BC%8C%E5%8D%8F%E8%AE%AE%E8%A1%A8%EF%BC%8C%E9%87%87%E7%94%A8%EF%BC%9A%E6%96%87%E6%A1%A3%E6%A8%A1%E5%9E%8B"><span class="toc-number">4.2.</span> <span class="toc-text">Pipeline，协议表，采用：文档模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C%E6%97%B6%EF%BC%8C%E4%BB%BB%E5%8A%A1%E8%A1%A8%EF%BC%9Acloud-process-task"><span class="toc-number">4.3.</span> <span class="toc-text">运行时，任务表：cloud_process_task</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C%E6%97%B6%EF%BC%8C%E4%BA%8B%E4%BB%B6%E8%A1%A8%EF%BC%9Acloud-process-event"><span class="toc-number">4.4.</span> <span class="toc-text">运行时，事件表：cloud_process_event</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C%E6%97%B6%EF%BC%8C%E5%88%86%E7%89%87%E8%A1%A8%EF%BC%9Acloud-process-segment"><span class="toc-number">4.5.</span> <span class="toc-text">运行时，分片表：cloud_process_segment</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C%E6%97%B6%EF%BC%8C%E8%B7%9F%E8%B8%AA%E8%A1%A8%EF%BC%9Acloud-process-trace"><span class="toc-number">4.6.</span> <span class="toc-text">运行时，跟踪表：cloud_process_trace</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#cb%E4%BD%93%E7%B3%BB"><span class="toc-number">5.</span> <span class="toc-text">cb体系</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">5.1.</span> <span class="toc-text"></span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/4d3edad6.html" title="视频切片并行加速">视频切片并行加速</a><time datetime="2024-08-11T10:11:25.916Z" title="发表于 2024-08-11 18:11:25">2024-08-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/9489c3a6.html" title="算法、模型工程化">算法、模型工程化</a><time datetime="2024-08-11T10:11:25.915Z" title="发表于 2024-08-11 18:11:25">2024-08-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/87af4ad.html" title="从0到1搭建媒体处理体系">从0到1搭建媒体处理体系</a><time datetime="2024-08-11T10:11:25.908Z" title="发表于 2024-08-11 18:11:25">2024-08-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/5359361b.html" title="版本核对">版本核对</a><time datetime="2024-08-11T08:37:08.000Z" title="发表于 2024-08-11 16:37:08">2024-08-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/8f08620d.html" title="流程决策">流程决策</a><time datetime="2024-07-21T02:18:59.000Z" title="发表于 2024-07-21 10:18:59">2024-07-21</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By ruanyi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i><a class="icon-V hidden" onclick="switchNightMode()" title="浅色和深色模式转换"></a><svg width="25" height="25" viewBox="0 0 1024 1024"></svg><use id="modeicon" xlink:href="#icon-moon"></use></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><canvas id="universe"></canvas><script defer src="/js/universe.js"></script><script src="/js/sun_moon.js" async></script><script src="//npm.elemecdn.com/leancloud-storage@4.13.1/dist/av-min.js"></script><script type="text/javascript" src="/js/dianzan.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
 POWERMODE.shake = true;
 POWERMODE.mobile = true;
 document.body.addEventListener('input', POWERMODE);
