@@ -74,7 +74,7 @@
   </url>
   
   <url>
-    <loc>https://ruanyi.github.io.git/movies/index.html</loc>
+    <loc>https://ruanyi.github.io.git/music/index.html</loc>
     
     <lastmod>2024-08-11</lastmod>
     
@@ -83,7 +83,7 @@
   </url>
   
   <url>
-    <loc>https://ruanyi.github.io.git/music/index.html</loc>
+    <loc>https://ruanyi.github.io.git/movies/index.html</loc>
     
     <lastmod>2024-08-11</lastmod>
     
@@ -216,6 +216,13 @@
   </url>
   
   <url>
+    <loc>https://ruanyi.github.io.git/tags/dag%E3%80%81Serverless-Workflow%E3%80%81%E5%B7%A5%E4%BD%9C%E6%B5%81/</loc>
+    <lastmod>2024-08-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://ruanyi.github.io.git/tags/%E5%8A%9F%E8%83%BD%E8%AF%B4%E6%98%8E/</loc>
     <lastmod>2024-08-31</lastmod>
     <changefreq>weekly</changefreq>
@@ -224,13 +231,6 @@
   
   <url>
     <loc>https://ruanyi.github.io.git/tags/cloud-bucket-config/</loc>
-    <lastmod>2024-08-31</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://ruanyi.github.io.git/tags/dag%E3%80%81Serverless-Workflow%E3%80%81%E5%B7%A5%E4%BD%9C%E6%B5%81/</loc>
     <lastmod>2024-08-31</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -279,14 +279,14 @@
   </url>
   
   <url>
-    <loc>https://ruanyi.github.io.git/tags/%E6%88%90%E6%9C%AC/</loc>
+    <loc>https://ruanyi.github.io.git/tags/%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F/</loc>
     <lastmod>2024-08-31</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://ruanyi.github.io.git/tags/%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F/</loc>
+    <loc>https://ruanyi.github.io.git/tags/%E6%88%90%E6%9C%AC/</loc>
     <lastmod>2024-08-31</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
