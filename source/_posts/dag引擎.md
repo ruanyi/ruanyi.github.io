@@ -259,4 +259,4 @@ or 设置整个任务为失败。流程图如下：
 1、Pipeline，配置表，强烈建议：由mysql来兜底，PS：当然前期，可以不设计该：key。
 2、task、event、segment、trace表，本来就是临时数据，方便任务管理、追踪，因此，不建议存在mysql。
 
-##                                                                                                                                                                                                                      
+## todo
