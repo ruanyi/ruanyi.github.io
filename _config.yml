@@ -115,7 +115,6 @@ deploy:
   type: git
   repository: https://github.com/ruanyi/ruanyi.github.io.git
   branch: main
-  token: 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
 
 # 站点地图
 sitemap:
