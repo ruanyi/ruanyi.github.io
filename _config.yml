@@ -118,6 +118,6 @@ deploy:
 
 # 站点地图
 sitemap:
-  path: sitemap.xmlxl
+  path: sitemap.xml
 baidusitemap:
   path: baidusitemap.xml
