@@ -1,0 +1,609 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>视频切片并行加速 | 朝花夕拾!</title><meta name="author" content="ruanyi"><meta name="copyright" content="ruanyi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="背景在实际业务中，视频处理，大都时候都挺费时的。例如：以下表格是，某中算法，在不同分辨率、帧率下的，cpu计算耗时体系（不包括：上传、下载的耗时）：    分辨率 帧数 处理时长 &#x2F; 视频时长    720p 30帧 2   720p 60帧 4   1080p 30帧 3   1080p 60帧 6   2k 30帧 3.5   2k 60帧 8   4k 30帧 7   4k 60帧">
+<meta property="og:type" content="article">
+<meta property="og:title" content="视频切片并行加速">
+<meta property="og:url" content="https://ruanyi.github.io.git/posts/4d3edad6.html">
+<meta property="og:site_name" content="朝花夕拾!">
+<meta property="og:description" content="背景在实际业务中，视频处理，大都时候都挺费时的。例如：以下表格是，某中算法，在不同分辨率、帧率下的，cpu计算耗时体系（不包括：上传、下载的耗时）：    分辨率 帧数 处理时长 &#x2F; 视频时长    720p 30帧 2   720p 60帧 4   1080p 30帧 3   1080p 60帧 6   2k 30帧 3.5   2k 60帧 8   4k 30帧 7   4k 60帧">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ruanyi.github.io.git/img/avatar.png">
+<meta property="article:published_time" content="2025-03-07T13:57:57.799Z">
+<meta property="article:modified_time" content="2025-03-07T13:58:39.844Z">
+<meta property="article:author" content="ruanyi">
+<meta property="article:tag" content="parallel、speed up、slice">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ruanyi.github.io.git/img/avatar.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "视频切片并行加速",
+  "url": "https://ruanyi.github.io.git/posts/4d3edad6.html",
+  "image": "https://ruanyi.github.io.git/img/avatar.png",
+  "datePublished": "2025-03-07T13:57:57.799Z",
+  "dateModified": "2025-03-07T13:58:39.844Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "ruanyi",
+      "url": "https://ruanyi.github.io.git/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://ruanyi.github.io.git/posts/4d3edad6.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.3.5"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '视频切片并行加速',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/universe.css"><!-- hexo injector head_end start --><link rel="stylesheet" href="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/clock.min.css" /><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">13</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/album/"><i class="fa-fw fas fa-images"></i><span> 相册</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">朝花夕拾!</span></a><a class="nav-page-title" href="/"><span class="site-name">视频切片并行加速</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/album/"><i class="fa-fw fas fa-images"></i><span> 相册</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">视频切片并行加速</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-03-07T13:57:57.799Z" title="发表于 2025-03-07 21:57:57">2025-03-07</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-03-07T13:58:39.844Z" title="更新于 2025-03-07 21:58:39">2025-03-07</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%AA%92%E4%BD%93%E5%A4%84%E7%90%86/">媒体处理</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>12分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><div id="post-outdate-notice" data="{&quot;limitDay&quot;:365,&quot;messagePrev&quot;:&quot;It has been&quot;,&quot;messageNext&quot;:&quot;days since the last update, the content of the article may be outdated.&quot;,&quot;postUpdate&quot;:&quot;2025-03-07 21:58:39&quot;}" hidden></div><h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>在实际业务中，视频处理，大都时候都挺费时的。例如：以下表格是，某中算法，在不同分辨率、帧率下的，cpu计算耗时体系（不包括：上传、下载的耗时）：<br></p>
+<table>
+<thead>
+<tr>
+<th>分辨率</th>
+<th>帧数</th>
+<th>处理时长 &#x2F; 视频时长</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>720p</td>
+<td>30帧</td>
+<td>2</td>
+</tr>
+<tr>
+<td>720p</td>
+<td>60帧</td>
+<td>4</td>
+</tr>
+<tr>
+<td>1080p</td>
+<td>30帧</td>
+<td>3</td>
+</tr>
+<tr>
+<td>1080p</td>
+<td>60帧</td>
+<td>6</td>
+</tr>
+<tr>
+<td>2k</td>
+<td>30帧</td>
+<td>3.5</td>
+</tr>
+<tr>
+<td>2k</td>
+<td>60帧</td>
+<td>8</td>
+</tr>
+<tr>
+<td>4k</td>
+<td>30帧</td>
+<td>7</td>
+</tr>
+<tr>
+<td>4k</td>
+<td>60帧</td>
+<td>20</td>
+</tr>
+</tbody></table>
+<p>另外，一般情况下，视频越长，所占用的cpu or gpu，也就越久。如此有以下弊端：<br>1、对于用户而言，耗时久，体验非常不好，有可能直接放弃了。<br>2、很容易造成资源负载不均，例如：有些机器比较倒霉，每次分配的都是：长视频（5min以上），有些机器比较luck，分配的大都都是：短视频（30s以内）<br>3、超过1h的视频，单台物理机，基本上不太可能能够处理完毕，姑且不谈cpu，内存都有可能爆满。</p>
+<h2 id="视频处理"><a href="#视频处理" class="headerlink" title="视频处理"></a>视频处理</h2><p>这里面的视频处理，可以是：libx264转码、libx265转码、超分、ai绘画、水印去除、人像增强、去模糊、去躁点等等。</p>
+<h2 id="为啥只谈视频切片？"><a href="#为啥只谈视频切片？" class="headerlink" title="为啥只谈视频切片？"></a>为啥只谈视频切片？</h2><p>切片并行加速，是否支持以下2个场景？</p>
+<p>1、文生视频，可否将：文本切成多段，然后，每段并发分别生成视频，最终合成一个大视频？<br>2、图片切片加速处理，可否将图片按块切片，然后，并发处理每一块，最终合成一个大图片？<br>3、图生视频，可否根据一张图片信息 + 文本信息，可生成一坨帧，合并成一个视频</p>
+<p>根据实际项目上看，暂时不行，尚需深入调研分析。<br>1、文生视频中的：文本是有上下文相关性的，暂时无法做到：将文本降维，变成：上下文无关性。<br>2、图片处理，目前性能不慢，暂时没有切片加速的需求，另外，图片按块来切，貌似也是有上下文相关性。<br>3、图生视频，可以</p>
+<h1 id="思路梳理"><a href="#思路梳理" class="headerlink" title="思路梳理"></a>思路梳理</h1><h2 id="资源扩容"><a href="#资源扩容" class="headerlink" title="资源扩容"></a>资源扩容</h2><p>例如：某一个算法，目前部署在：8核cpu上，可逐步调大cpu 核数 + 内存大小，当然了，资源也是有限的，扩大到一定核数后，并不能100%能解决问题，另外，成本也是一个大问题。</p>
+<h2 id="最强硬件技术"><a href="#最强硬件技术" class="headerlink" title="最强硬件技术"></a>最强硬件技术</h2><p>假设不差钱，可以考虑上：更强型号的cpu or 更强型号的gpu，例如：大型机 or<br>银河系列超级计算机。可惜，就算是上了最强的CPU，在面对：长视频 + 高帧率 +<br>高分辨率的情况下，也有力不从心的时候。</p>
+<h2 id="并行计算策略"><a href="#并行计算策略" class="headerlink" title="并行计算策略"></a>并行计算策略</h2><p>遇到长视频、高帧率、高分辨率的视频，处理慢时，可以考虑将视频切成多个小视频，然后，并行地处理：小视频，最后将它们的结果合并起来，从而得到原先视频的计算结果，典型的并行算法计算的策略。<br>1、切片：分解（Divide）将一个大视频切成多个小视频。<br>2、并行：并行处理这些片段。<br>3、合并：将这些片段的结果合并起来，以获得整体的结果。</p>
+<h3 id="为啥能加速？"><a href="#为啥能加速？" class="headerlink" title="为啥能加速？"></a>为啥能加速？</h3><table>
+<thead>
+<tr>
+<th>能够加速的原因</th>
+<th>重要程度</th>
+<th>说明</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>切 -&gt; 并 -&gt; 合，强依赖于：并行调度</td>
+<td>top 0</td>
+<td>单个视频的所有切片并行计算，子任务之间并发执行，尽量不要排队等待。。并发度 &#x3D; 并发执行的任务数 &#x2F; 总的任务数</td>
+<td></td>
+</tr>
+<tr>
+<td>GPU池子 与cpu池子的合理配比</td>
+<td>top 0</td>
+<td>1、如果cpu池子中核数不够多，例如：&lt;&#x3D; 10核，那么大概率起不到加速效果。<br/> 2、如果gpu池子的卡数不够多，例如：一个算法只能调度到一张卡，那么，也起不到加速效果</td>
+<td></td>
+</tr>
+<tr>
+<td>切片策略：各个阶段算法参数，合理设置</td>
+<td>top 0</td>
+<td>切片加速策略</td>
+<td></td>
+</tr>
+<tr>
+<td>开启切片的条件：视频时长</td>
+<td>top 1</td>
+<td>通用策略：如果视频时长 &lt;&#x3D; 1min，触发加速有可能会适得其反，费资源，又更慢（毕竟：切、合是有成本的）。<br/>当然了，不同算法，这个阈值，有可能会不一样，需灵活对待。<br/>不同分辨率 + 不同格式的视频等，是否有这一规律，目前待定，并未找到规律。</td>
+<td></td>
+</tr>
+</tbody></table>
+<h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><p>如上所述，将重点探讨：切片加速的相关方案。大体过程，如下图所示：<br><img src="/img/loading.gif" data-original="/images/slice_speed_up.png"><br><img src="/img/loading.gif" data-original="/images/slice_dag_1.png"><br>备注：<br>1、上述过程要求：片与片之间，没有关联性，然后，并行处理，来提高处理速度 + 降低对硬件的需求。<br>2、在实际业务中，片与片之间，部分情况下，存在上下文的关联性。其解决思路之一：分析下关联性有什么特点，然后，将这个关联性降维到无关联性。例如：某一算法的加速流程如下图所示：<br><img src="/img/loading.gif" data-original="/images/slice_speed_up_2.png"><br><img src="/img/loading.gif" data-original="/images/slice_dag_3.png"><br>其整体流程就会由：切 -&gt; 并 -&gt; 合，变成：切 -&gt; 切 -&gt; 合 -&gt; 并 -&gt; 合。<br>3、提取音频时，直接做音频转码，也属于：旁路的并行流程。<br>4、切片 + 处理，需并行处理，是能够提速的关键。</p>
+<h2 id="模块抽象"><a href="#模块抽象" class="headerlink" title="模块抽象"></a>模块抽象</h2><table>
+<thead>
+<tr>
+<th>模块</th>
+<th>功能定位</th>
+<th>是否连db</th>
+<th>是否上传 or 下载</th>
+<th>并发度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>总控集群</td>
+<td>切片策略、算法编排、任务重试、任务取消、优先级调度等</td>
+<td>是</td>
+<td>否</td>
+<td>高，单个pod基本上要达到300QPS以上(8核cpu，经验值)</td>
+</tr>
+<tr>
+<td>计算集群</td>
+<td>原子化cpu、gpu计算，负责：算</td>
+<td>否</td>
+<td>是</td>
+<td>低，单个pod一般处理：2个以内的视频 or 5个以内的图片（经验值）</td>
+</tr>
+</tbody></table>
+<h2 id="总控进程"><a href="#总控进程" class="headerlink" title="总控进程"></a>总控进程</h2><table>
+<thead>
+<tr>
+<th>功能</th>
+<th>重要性</th>
+<th>说明</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>切片策略</td>
+<td>top 0</td>
+<td>描述一个视频该怎么切片，按帧切？还是按视频时长切？</td>
+<td></td>
+</tr>
+<tr>
+<td>算法编排</td>
+<td>top 1</td>
+<td>切片、音频提取、视频合并、音视合并等各个阶段编排在一起，整体流程</td>
+<td></td>
+</tr>
+<tr>
+<td>任务重试</td>
+<td>top 0</td>
+<td>理论上，该任务可以重试，重新触发计算，不影响结果</td>
+<td></td>
+</tr>
+<tr>
+<td>check bill</td>
+<td>top 1</td>
+<td>任务卡死、节点卡死时，如何触发继续流转下去？如何通知业务方？</td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id="task、event、segment、trace"><a href="#task、event、segment、trace" class="headerlink" title="task、event、segment、trace"></a>task、event、segment、trace</h2><table>
+<thead>
+<tr>
+<th>名词</th>
+<th>解释</th>
+<th>关系</th>
+<th>说明</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>task</td>
+<td>任务</td>
+<td>一次请求，对应一笔任务</td>
+<td>一笔切片请求，对应一笔任务</td>
+<td>可使用UUID生成唯一的：task_id</td>
+</tr>
+<tr>
+<td>event</td>
+<td>事件</td>
+<td>task 与event 是一对多的关系</td>
+<td>一个dag节点，对应一个事件</td>
+<td>event_id &#x3D; task_id + “_” + node_name</td>
+</tr>
+<tr>
+<td>segment</td>
+<td>片</td>
+<td>event 与 segment 是一对多的关系</td>
+<td>一个视频片，对应一个event</td>
+<td>segment_id &#x3D; event_id + “_” + order</td>
+</tr>
+<tr>
+<td>trace</td>
+<td>跟踪</td>
+<td>trace 与 event、segment 是一对多的关系</td>
+<td>一次cpu、gpu计算，对应一次trace</td>
+<td>可使用UUID生成唯一的：trace_id</td>
+</tr>
+</tbody></table>
+<h2 id="音频剥离"><a href="#音频剥离" class="headerlink" title="音频剥离"></a>音频剥离</h2><p>依赖算法:libfdk_aac or aac，将音频从原始视频中剥离开来，例如：ffmpeg命令如下：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i source.mp4 -vn -y -acodec libfdk_aac -copyts output.aac -loglevel error</span><br></pre></td></tr></table></figure>
+
+<p>为啥要音频提取并且重新转码？<br>1、一般算法处理，都是针对视频流，很少有针对音频流的，而处理慢，主要是处理视频慢，非处理音频慢，因此，将音频流提取出来，能够：减少视频处理过程的IO +<br>减少：cpu、gpu计算量。<br>2、用户输入的视频，格式千变万化，有些视频无法直接通过：-acodec<br>copy，直接将音频提取出来，会奇奇怪怪的错误。因此，统一将音频流转码，统一音频格式。另外，需：-copyts的PTS信息。<br>3、有些视频天然没有音频，因此，在处理前，需判断原始视频是否有音频，若有，再触发：音频提取流程，否则：直接触发视频切片。</p>
+<h2 id="视频侦测：meta信息提取"><a href="#视频侦测：meta信息提取" class="headerlink" title="视频侦测：meta信息提取"></a>视频侦测：meta信息提取</h2><p>1、显示“流”的全局属性:</p>
+<pre><code>- 显示的是流级信息，每个流（视频、音频、字幕等）只有一条记录。
+- 提供整体的技术参数，例如编解码器、分辨率、码率、帧率、采样率等。
+- 适用于快速查看媒体文件的基本属性和整体结构。
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffprobe -v quiet -print_format json -show_format -show_streams -loglevel error &#123;path&#125;</span><br></pre></td></tr></table></figure>
+
+<p>2、显示“帧”的全局信息</p>
+<pre><code>- 显示的是帧级信息，每一帧（视频帧、音频帧）都有详细记录。
+- 包含帧的时间戳（如 pts_time）、帧类型（I、P、B 帧）、时长、关键帧标识等详细数据。
+- 适用于需要分析视频细节（例如精确剪辑、帧检测等）时使用，因为它输出的数据量通常非常大。
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffprobe -select_streams v -show_frames -print_format json &#123;path&#125;</span><br></pre></td></tr></table></figure>
+
+<p>1、以上两条命令中的：{path}可以是本地路径，也可以是url，如果视频必须要下载到本地，则使用本地路径，否则：更建议使用url。<br>2、以上两条命令是对输入视频进行画像，以便决策：它是否能够进行切片加速？以及相关的切片策略？</p>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>说明</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>码率</td>
+<td>码率太低 or 码率太高，需要设置不同的码率策略</td>
+<td>可行</td>
+</tr>
+<tr>
+<td>帧率</td>
+<td></td>
+<td>可行</td>
+</tr>
+<tr>
+<td>分辨率</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>负数帧</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>部分帧的pts都是一模一样的</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id="视频切片"><a href="#视频切片" class="headerlink" title="视频切片"></a>视频切片</h2><table>
+<thead>
+<tr>
+<th>功能</th>
+<th>说明</th>
+<th>是否可行</th>
+<th>业界是否有</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>按照gop关键帧切</td>
+<td>输入视频时长，快速分割出一坨的视频文件</td>
+<td>可行</td>
+<td>有</td>
+</tr>
+<tr>
+<td>按帧索引切</td>
+<td>将原始视频的帧解封装，然后，使用libx264 or libx265重新压缩</td>
+<td>可行</td>
+<td>暂无</td>
+</tr>
+<tr>
+<td>视频解码成图片</td>
+<td>将原始视频里的帧解码成图片，然后，直接基于图片并行处理</td>
+<td>暂不可行，图片太多，并发度太大，网络带宽扛不住</td>
+<td>暂无</td>
+</tr>
+</tbody></table>
+<p>当然了，视频如何切，需要考虑：底层算法，<br>1、有些算法，需要预留一些buffer帧进行预热，才能确保切片后的视频画质，能够不输于：不切片时的结果视频画质。<br>这种buffer帧策略，分为：前向重叠帧策略、后置重叠帧策略、双向重叠帧策略、无重叠帧。<br>2、有些算法，例如：消除某段视频里的某个物体，片与片之间存在上下文的相关性，此时，切片时，要将该物体所对应的帧序列，单独切出来，然后，合并到各个片上去，将所有片降维到：无关联性。<br>3、切片时，最好不要保留：PTS（后续基本用不上），也就是：切片时，将所有片的PTS都重置成0。<br>4、切片时，重叠的一些帧，在后续步骤中，需去除掉。</p>
+<p>另外：1、按照视频时长切片，参考的ffmepg命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i input.mp4 -c copy -map 0 -segment_time 10 -f segment output_%03d.mp4</span><br></pre></td></tr></table></figure>
+
+<p>假设需要实现：重叠帧 or 预热帧的功能，则</p>
+<p>2、使用cv2：pip install opencv-python ffmpeg-python 按照帧索引切：参考代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">def slice_and_combine_video(input_video_path, output_video_path, frame_start, frame_end):</span><br><span class="line">    video_capture = cv2.VideoCapture(input_video_path)</span><br><span class="line">    fps = int(video_capture.get(cv2.CAP_PROP_FPS))</span><br><span class="line">    width = int(video_capture.get(cv2.CAP_PROP_FRAME_WIDTH))</span><br><span class="line">    height = int(video_capture.get(cv2.CAP_PROP_FRAME_HEIGHT))</span><br><span class="line">    fourcc = cv2.VideoWriter_fourcc(*&quot;H264&quot;)</span><br><span class="line">    video_writer = cv2.VideoWriter(output_video_path, fourcc, fps, (width, height))</span><br><span class="line">    success, frame = video_capture.read()</span><br><span class="line">    count = 0</span><br><span class="line">    while success:</span><br><span class="line">        if count &gt;= frame_start and count &lt;= frame_end:</span><br><span class="line">            video_writer.write(frame)</span><br><span class="line">            </span><br><span class="line">        success, frame = video_capture.read()</span><br><span class="line">        count += 1</span><br><span class="line">    # 释放资源</span><br><span class="line">    video_capture.release()</span><br><span class="line">    video_writer.release()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if __name__ == &quot;__main__&quot;:</span><br><span class="line">    input_video_path = &quot;&quot;</span><br><span class="line">    output_video_path = &quot;&quot;</span><br><span class="line">    frame_start = 10</span><br><span class="line">    frame_end = 50</span><br><span class="line">    slice_and_combine_video(input_video_path, output_video_path, frame_start, frame_end)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="并行处理"><a href="#并行处理" class="headerlink" title="并行处理"></a>并行处理</h2><table>
+<thead>
+<tr>
+<th>算法</th>
+<th>片与片之间</th>
+<th>是否支持切片</th>
+<th>说明</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>libx264</td>
+<td>不相关</td>
+<td>支持</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>libx265</td>
+<td>不相关</td>
+<td>支持</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>去水印</td>
+<td>不相关</td>
+<td>支持</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>去字幕</td>
+<td>不相关</td>
+<td>支持</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>去某个物体</td>
+<td>有点相关</td>
+<td>可降维到不相关，支持</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>文生图</td>
+<td>强相关</td>
+<td>调研突破中</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>文生视频</td>
+<td>强相关</td>
+<td>调研突破中</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>图生视频</td>
+<td>弱相关</td>
+<td>支持</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>无论是哪种算法，都需要对输入视频进行解封装 + 重新编解码，因此，如果切片时有预留一些帧做buffer等操作，一般都在：并行处理中，去除这些buffer帧。<br>因此，底层算法，需要支持：remove_frames:[start_frames,end_frames]、[start_gop,end_gop]</p>
+<h2 id="视频合并"><a href="#视频合并" class="headerlink" title="视频合并"></a>视频合并</h2><p>算法并行处理完毕后，能够得出一坨的算法处理后的视频片段，收集到这些片段后，将这些片段合并，即能得到一个完整的、处理后的视频。例如：参考ffmpeg命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -f concat -safe 0 -i &#123;0&#125; -i &#123;1&#125; -c copy -output_ts_offset &#123;2&#125; -movflags faststart &#123;3&#125; -loglevel error</span><br></pre></td></tr></table></figure>
+
+<p>注意：输入的各个片段的PTS，已重置过 + 算法重新编解码过，因此，需要在这边做：视频PTS对齐操作。否则，极容易导致：音画不同步的问题。</p>
+<h2 id="音视合并"><a href="#音视合并" class="headerlink" title="音视合并"></a>音视合并</h2><p>最后一步，将音频流 + 视频流合并，使用如下：ffmepg命令，即可正常合并。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i &#123;0&#125; -i &#123;1&#125; -copypts -c:v copy -c:a copy -map_metadata 0 -strict experimental -movflags faststart &#123;2&#125; -loglevel error</span><br></pre></td></tr></table></figure>
+
+<h2 id="算法编排"><a href="#算法编排" class="headerlink" title="算法编排"></a>算法编排</h2><p>如本文中<a href="#%E5%88%87%E7%89%87%E5%8A%A0%E9%80%9F">切片加速</a><br>图片所示：整个过程，可以硬编代码写死，也可以使用dag引擎来编排，详细内容，可参考章节：<a href="/posts/394f6975.html">任务编排</a><br>，这里不再赘述。</p>
+<h2 id="资源调度"><a href="#资源调度" class="headerlink" title="资源调度"></a>资源调度</h2><p>包括：多云调度、cpu集群与gpu集群协调、自动扩缩容等等，这些将在章节：<a href="/posts/8e26567b.html">资源调度</a>，重点描述，这里不再赘述。</p>
+<h2 id="cb体系"><a href="#cb体系" class="headerlink" title="cb体系"></a>cb体系</h2><p>如本文中<a href="#%E5%88%87%E7%89%87%E5%8A%A0%E9%80%9F">切片加速</a> 包括的图片所示，由于中间各个步骤，包括了大量的：cpu or<br>gpu计算服务，比较容易导致：算法奔溃，卡死，导致总控进程长时间未收到回调，因此，需要总控进程触发check 任务状态，假设超过一定的时间阈值，重试<br>or 设置整个任务为失败。</p>
+<h2 id="监控指标"><a href="#监控指标" class="headerlink" title="监控指标"></a>监控指标</h2><h3 id="压缩比"><a href="#压缩比" class="headerlink" title="压缩比"></a>压缩比</h3><p>压缩比 &#x3D; 输出视频文件大小 &#x2F; 输入视频的文件大小</p>
+<h1 id="成本"><a href="#成本" class="headerlink" title="成本"></a>成本</h1><h2 id="小文件存储成本"><a href="#小文件存储成本" class="headerlink" title="小文件存储成本"></a>小文件存储成本</h2><table>
+<thead>
+<tr>
+<th>类别</th>
+<th>说明</th>
+<th>存储规格</th>
+<th>生命周期</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>原视频</td>
+<td>存放在桶1</td>
+<td>推荐：3天内，标准存储，超出：自动降档</td>
+<td>按照业务场景定，例如：3天内，自动归档</td>
+<td></td>
+</tr>
+<tr>
+<td>结果视频</td>
+<td>存放在桶2</td>
+<td>推荐：21天内，标准存储，超出：自动清理</td>
+<td>按照业务场景定,例如：21天，标准存储，之后自动清理</td>
+<td></td>
+</tr>
+<tr>
+<td>中间片段</td>
+<td>存放在桶3</td>
+<td>单副本即可</td>
+<td>按照业务场景定，建议1天后，自动清理</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>备注：<br>1、强烈建议：原始视频 + 结果视频 + 中间片段，存放在3个桶里，或者：至少3个文件夹里，单独根据业务场景设置生命周期规则，例如：小文件存储提供的特性，自动清理<br>2、上述：推荐的存储规格，只是一种建议。真实落地时，得根据实际项目的运行情况来。</p>
+<h2 id="性能与成本均衡"><a href="#性能与成本均衡" class="headerlink" title="性能与成本均衡"></a>性能与成本均衡</h2><p>经过实测，切片能够加速，能够加速：处理时长&#x2F;视频时长 ≈ 0.5左右，但是，切片成本 &#x2F; 不切片成本 &#x3D; 1.1，视不同算法而定。<br>因此，是否所有视频都开启切片？答案：否定的，得根据实际情况来定，例如：超过1min的视频，才开启切片加速。</p>
+<p>另外，cpu集群与gpu集群，可以考虑混部，</p>
+<p>存储集群 + 计算集群，可以考虑：单元化部署，当然了，还是遵守：存算一体原则。</p>
+<h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><h2 id="图片处理是否需要切片并行？"><a href="#图片处理是否需要切片并行？" class="headerlink" title="图片处理是否需要切片并行？"></a>图片处理是否需要切片并行？</h2><p>图片处理，一般比较快，如果遇到慢的问题，可通过：扩容资源的方式来处理，暂时无法进行：切片并行的策略。</p>
+<p>当然了，图片分块后，块与块之间，都有相关性，暂时无法做到：并行化。</p>
+<h2 id="色偏"><a href="#色偏" class="headerlink" title="色偏"></a>色偏</h2><p>切片与并行算法处理，均需要考虑：色偏问题，重点是：做好色域映射。</p>
+<h2 id="音轨、视轨无法对齐"><a href="#音轨、视轨无法对齐" class="headerlink" title="音轨、视轨无法对齐"></a>音轨、视轨无法对齐</h2><p>视频PTS对齐 + 音频PTS对齐</p>
+<h2 id=""><a href="#" class="headerlink" title=""></a></h2></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://ruanyi.github.io.git">ruanyi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://ruanyi.github.io.git/posts/4d3edad6.html">https://ruanyi.github.io.git/posts/4d3edad6.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://ruanyi.github.io.git" target="_blank">朝花夕拾!</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/parallel%E3%80%81speed-up%E3%80%81slice/">parallel、speed up、slice</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.4/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.4/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/loading.gif" data-original="/img/wechat.jpg" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/loading.gif" data-original="/img/alipay.jpg" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/posts/9489c3a6.html" title="算法工程化"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">算法工程化</div></div><div class="info-2"><div class="info-item-1">背景将相关算法部署，并提供一个 or 多个http接口，服务于业务方。 算法大学中所学的数据结构课本上说：算法是指解决问题或执行任务的有序步骤集合。当然，如此描述的算法，相当准确。但是，对于实际工程落地而言，还是过于：抽象。这里面描述的算法，是指：算法同学所交付的可执行文件 orso库，例如：视频压缩领域的：264算法，交付的产品：集成到ffmepg中的libx264。例如：如下命令，是使用：libx264算法真正去压缩一个视频的命令，那么：对于实际工程落地而言，所提供的带上libx264的ffmpeg可执行程序，可以简单地理解成：算法 1ffmpeg -i source.mov -s 1280x720 -profile:v high444 -c:v libx264 -preset veryslow -crf 30 -r 30 -g 120 -keyint_min 30 -sc_threshold 40 -bf 3 -b_strategy 2 -refs 5 -c:a libfdk_aac -profile:a aac_low -b:a 128k -movflags...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">ruanyi</div><div class="author-info-description">Tommy Ruan</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">13</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/ruanyi"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/ruanyi" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:540728086@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">朝花夕拾</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%83%8C%E6%99%AF"><span class="toc-number">1.</span> <span class="toc-text">背景</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%86%E9%A2%91%E5%A4%84%E7%90%86"><span class="toc-number">1.1.</span> <span class="toc-text">视频处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E5%95%A5%E5%8F%AA%E8%B0%88%E8%A7%86%E9%A2%91%E5%88%87%E7%89%87%EF%BC%9F"><span class="toc-number">1.2.</span> <span class="toc-text">为啥只谈视频切片？</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%9D%E8%B7%AF%E6%A2%B3%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">思路梳理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B5%84%E6%BA%90%E6%89%A9%E5%AE%B9"><span class="toc-number">2.1.</span> <span class="toc-text">资源扩容</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E5%BC%BA%E7%A1%AC%E4%BB%B6%E6%8A%80%E6%9C%AF"><span class="toc-number">2.2.</span> <span class="toc-text">最强硬件技术</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B9%B6%E8%A1%8C%E8%AE%A1%E7%AE%97%E7%AD%96%E7%95%A5"><span class="toc-number">2.3.</span> <span class="toc-text">并行计算策略</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E5%95%A5%E8%83%BD%E5%8A%A0%E9%80%9F%EF%BC%9F"><span class="toc-number">2.3.1.</span> <span class="toc-text">为啥能加速？</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="toc-number">3.</span> <span class="toc-text">解决方案</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E5%9D%97%E6%8A%BD%E8%B1%A1"><span class="toc-number">3.1.</span> <span class="toc-text">模块抽象</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E6%8E%A7%E8%BF%9B%E7%A8%8B"><span class="toc-number">3.2.</span> <span class="toc-text">总控进程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#task%E3%80%81event%E3%80%81segment%E3%80%81trace"><span class="toc-number">3.3.</span> <span class="toc-text">task、event、segment、trace</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9F%B3%E9%A2%91%E5%89%A5%E7%A6%BB"><span class="toc-number">3.4.</span> <span class="toc-text">音频剥离</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%86%E9%A2%91%E4%BE%A6%E6%B5%8B%EF%BC%9Ameta%E4%BF%A1%E6%81%AF%E6%8F%90%E5%8F%96"><span class="toc-number">3.5.</span> <span class="toc-text">视频侦测：meta信息提取</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%86%E9%A2%91%E5%88%87%E7%89%87"><span class="toc-number">3.6.</span> <span class="toc-text">视频切片</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B9%B6%E8%A1%8C%E5%A4%84%E7%90%86"><span class="toc-number">3.7.</span> <span class="toc-text">并行处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%86%E9%A2%91%E5%90%88%E5%B9%B6"><span class="toc-number">3.8.</span> <span class="toc-text">视频合并</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9F%B3%E8%A7%86%E5%90%88%E5%B9%B6"><span class="toc-number">3.9.</span> <span class="toc-text">音视合并</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%97%E6%B3%95%E7%BC%96%E6%8E%92"><span class="toc-number">3.10.</span> <span class="toc-text">算法编排</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B5%84%E6%BA%90%E8%B0%83%E5%BA%A6"><span class="toc-number">3.11.</span> <span class="toc-text">资源调度</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cb%E4%BD%93%E7%B3%BB"><span class="toc-number">3.12.</span> <span class="toc-text">cb体系</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%91%E6%8E%A7%E6%8C%87%E6%A0%87"><span class="toc-number">3.13.</span> <span class="toc-text">监控指标</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%8B%E7%BC%A9%E6%AF%94"><span class="toc-number">3.13.1.</span> <span class="toc-text">压缩比</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%88%90%E6%9C%AC"><span class="toc-number">4.</span> <span class="toc-text">成本</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%8F%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8%E6%88%90%E6%9C%AC"><span class="toc-number">4.1.</span> <span class="toc-text">小文件存储成本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E4%B8%8E%E6%88%90%E6%9C%AC%E5%9D%87%E8%A1%A1"><span class="toc-number">4.2.</span> <span class="toc-text">性能与成本均衡</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%97%AE%E9%A2%98"><span class="toc-number">5.</span> <span class="toc-text">问题</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%BE%E7%89%87%E5%A4%84%E7%90%86%E6%98%AF%E5%90%A6%E9%9C%80%E8%A6%81%E5%88%87%E7%89%87%E5%B9%B6%E8%A1%8C%EF%BC%9F"><span class="toc-number">5.1.</span> <span class="toc-text">图片处理是否需要切片并行？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%89%B2%E5%81%8F"><span class="toc-number">5.2.</span> <span class="toc-text">色偏</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9F%B3%E8%BD%A8%E3%80%81%E8%A7%86%E8%BD%A8%E6%97%A0%E6%B3%95%E5%AF%B9%E9%BD%90"><span class="toc-number">5.3.</span> <span class="toc-text">音轨、视轨无法对齐</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">5.4.</span> <span class="toc-text"></span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/4d3edad6.html" title="视频切片并行加速">视频切片并行加速</a><time datetime="2025-03-07T13:57:57.799Z" title="发表于 2025-03-07 21:57:57">2025-03-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/9489c3a6.html" title="算法工程化">算法工程化</a><time datetime="2025-03-01T07:53:41.607Z" title="发表于 2025-03-01 15:53:41">2025-03-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/87af4ad.html" title="从0到1搭建媒体处理体系">从0到1搭建媒体处理体系</a><time datetime="2025-03-01T07:53:41.603Z" title="发表于 2025-03-01 15:53:41">2025-03-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/5359361b.html" title="版本核对">版本核对</a><time datetime="2024-08-11T08:37:08.000Z" title="发表于 2024-08-11 16:37:08">2024-08-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/8f08620d.html" title="流程决策">流程决策</a><time datetime="2024-07-21T02:18:59.000Z" title="发表于 2024-07-21 10:18:59">2024-07-21</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2025 By ruanyi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.3.5"></script><script src="/js/main.js?v=5.3.5"></script><div class="js-pjax"></div><canvas id="universe"></canvas><script defer src="/js/universe.js"></script><script src="/js/sun_moon.js" async></script><script src="//npm.elemecdn.com/leancloud-storage@4.13.1/dist/av-min.js"></script><script type="text/javascript" src="/js/dianzan.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.4/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.4/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = true;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.4/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><!-- hexo injector body_end start --><script data-pjax>
+  function butterfly_clock_anzhiyu_injector_config(){
+    var parent_div_git = document.getElementsByClassName('sticky_layout')[0];
+    var item_html = '<div class="card-widget card-clock"><div class="card-glass"><div class="card-background"><div class="card-content"><div id="hexo_electric_clock"><img class="entered loading" id="card-clock-loading" src="/img/loading.gif" data-original="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/loading.gif" style="height: 120px; width: 100%;" data-ll-status="loading"/></div></div></div></div></div>';
+    console.log('已挂载butterfly_clock_anzhiyu')
+    if(parent_div_git) {
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  }
+  var elist = 'null'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var qweather_key = 'e6a79dfc143a4aec961f9de5519f73e0';
+  var gaud_map_key = 'a6c7f819e77cf77621fce4a9cbc5d096';
+  var baidu_ak_key = 'undefined';
+  var flag = 0;
+  var clock_rectangle = '112.982279,28.19409';
+  var clock_default_rectangle_enable = 'false';
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_clock_anzhiyu_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_clock_anzhiyu_injector_config();
+  }
+  </script><script src="https://widget.qweather.net/simple/static/js/he-simple-common.js?v=2.0"></script><script data-pjax src="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/clock.min.js"></script><!-- hexo injector body_end end -->
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(r){r.imageLazyLoadSetting.processImages=t;var e=r.imageLazyLoadSetting.isSPA,n=r.imageLazyLoadSetting.preloadRatio||1,c=a();function a(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(){e&&(c=a());for(var t,o=0;o<c.length;o++)0<=(t=(t=c[o]).getBoundingClientRect()).bottom&&0<=t.left&&t.top<=(r.innerHeight*n||document.documentElement.clientHeight*n)&&function(){var t,e,n,a,i=c[o];e=function(){c=c.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(n=new Image,a=t.getAttribute("data-original"),n.onload=function(){t.src=a,t.removeAttribute("data-original"),e&&e()},t.src!==a&&(n.src=a))}()}function i(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",i),r.addEventListener("resize",i),r.addEventListener("orientationchange",i)}(this);</script></body></html>
