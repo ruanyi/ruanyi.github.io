@@ -1,0 +1,364 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>预计算 | 朝花夕拾!</title><meta name="author" content="ruanyi"><meta name="copyright" content="ruanyi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="一、功能目标 当文件上传完毕（无论是通过 SDK &#x2F; API &#x2F; 控制台上传），系统能够自动触发对应的 后处理动作，例如： 🎞 视频自动转码 🖼 图片缩略图生成 🧠 AI 内容分析（如标签识别、人脸检测） 🪣 元数据同步 &#x2F; CDN 刷新 &#x2F; 日志上报 目标是： 解耦上传与后处理； 支持灵活扩展； 支持异步高可用。 二、系统流程图（逻辑架构）┌───">
+<meta property="og:type" content="article">
+<meta property="og:title" content="预计算">
+<meta property="og:url" content="https://ruanyi.github.io.git/posts/Infinity.html">
+<meta property="og:site_name" content="朝花夕拾!">
+<meta property="og:description" content="一、功能目标 当文件上传完毕（无论是通过 SDK &#x2F; API &#x2F; 控制台上传），系统能够自动触发对应的 后处理动作，例如： 🎞 视频自动转码 🖼 图片缩略图生成 🧠 AI 内容分析（如标签识别、人脸检测） 🪣 元数据同步 &#x2F; CDN 刷新 &#x2F; 日志上报 目标是： 解耦上传与后处理； 支持灵活扩展； 支持异步高可用。 二、系统流程图（逻辑架构）┌───">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ruanyi.github.io.git/img/avatar.png">
+<meta property="article:published_time" content="2025-11-08T09:30:20.000Z">
+<meta property="article:modified_time" content="2025-11-08T09:33:58.437Z">
+<meta property="article:author" content="ruanyi">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ruanyi.github.io.git/img/avatar.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "预计算",
+  "url": "https://ruanyi.github.io.git/posts/Infinity.html",
+  "image": "https://ruanyi.github.io.git/img/avatar.png",
+  "datePublished": "2025-11-08T09:30:20.000Z",
+  "dateModified": "2025-11-08T09:33:58.437Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "ruanyi",
+      "url": "https://ruanyi.github.io.git"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://ruanyi.github.io.git/posts/Infinity.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '预计算',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/universe.css"><!-- hexo injector head_end start --><link rel="stylesheet" href="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/clock.min.css" /><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">16</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">13</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/album/"><i class="fa-fw fas fa-images"></i><span> 相册</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">朝花夕拾!</span></a><a class="nav-page-title" href="/"><span class="site-name">预计算</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/album/"><i class="fa-fw fas fa-images"></i><span> 相册</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">预计算</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-11-08T09:30:20.000Z" title="发表于 2025-11-08 17:30:20">2025-11-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-11-08T09:33:58.437Z" title="更新于 2025-11-08 17:33:58">2025-11-08</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">893</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>3分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><div id="post-outdate-notice" data="{&quot;limitDay&quot;:365,&quot;messagePrev&quot;:&quot;It has been&quot;,&quot;messageNext&quot;:&quot;days since the last update, the content of the article may be outdated.&quot;,&quot;postUpdate&quot;:&quot;2025-11-08 17:33:58&quot;}" hidden></div><p>一、功能目标</p>
+<p>当文件上传完毕（无论是通过 SDK &#x2F; API &#x2F; 控制台上传），系统能够自动触发对应的 后处理动作，例如：</p>
+<p>🎞 视频自动转码</p>
+<p>🖼 图片缩略图生成</p>
+<p>🧠 AI 内容分析（如标签识别、人脸检测）</p>
+<p>🪣 元数据同步 &#x2F; CDN 刷新 &#x2F; 日志上报</p>
+<p>目标是：</p>
+<p>解耦上传与后处理；</p>
+<p>支持灵活扩展；</p>
+<p>支持异步高可用。</p>
+<p>二、系统流程图（逻辑架构）<br>┌────────────────────────────┐<br>│ Upload SDK &#x2F; API │<br>└──────────────┬─────────────┘<br>│ 上传成功回调<br>▼<br>┌──────────────────────┐<br>│ Upload Service │<br>│ (统一上传接入层)       │<br>└──────────────────────┘<br>│<br>查询 cloud_process_pre_action<br>│<br>▼<br>┌───────────────────────────────────┐<br>│ PreAction Dispatcher │<br>│  (动作分发模块，匹配触发条件)     │<br>└───────────────────────────────────┘<br>│ │ │<br>▼ ▼ ▼<br>┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐<br>│ MQ Producer │ │ Webhook Caller │ │ Local Worker │<br>│ (Kafka&#x2F;Rabbit)  │ │ (HTTP 推送)     │ │ (同步任务)       │<br>└─────────────────┘ └─────────────────┘ └─────────────────┘<br>│ │<br>▼ ▼<br>┌────────────┐ ┌──────────────────┐<br>│ Consumer │ │ Third-Party API │<br>│ Worker Pool│ │ (AI&#x2F;转码&#x2F;ETL等)   │<br>└────────────┘ └──────────────────┘</p>
+<p>💡 设计说明：</p>
+<p>Upload Service 是统一入口，可内嵌于文件网关模块。</p>
+<p>Dispatcher 查询 cloud_process_pre_action 表，根据规则匹配哪些动作需要触发。</p>
+<p>动作触发支持三种模式：</p>
+<p>MQ 模式：异步队列（推荐）</p>
+<p>Webhook 模式：直连下游服务（适合内部系统）</p>
+<p>Local Worker 模式：轻量化同步处理（适合小业务）</p>
+<p>三、事件时序图（Sequence Diagram）</p>
+<p>以下为一次「上传 → 自动转码 + AI分析」的完整时序：<br>┌──────────────┐    ┌────────────────┐    ┌──────────────────────┐    ┌────────────────────────┐<br>│  Client SDK  │    │ Upload Service │    │ PreAction Dispatcher │    │ PreAction Worker&#x2F;Hook  │<br>└──────┬───────┘    └────────┬───────┘    └────────────┬────────┘    └───────────────┬────────┘<br>│ 上传请求             │                        │                         │<br>│─────────────────────&gt;│                        │                         │<br>│                     │ 文件上传成功             │                         │<br>│                     │ 生成文件meta信息         │                         │<br>│                     │ 查询 pre_action 配置     │                         │<br>│                     │────────────────────────&gt;│                         │<br>│                     │                        │  匹配trigger_condition    │<br>│                     │                        │  生成任务事件(event msg)  │<br>│                     │&lt;────────────────────────│                         │<br>│                     │ 推送MQ &#x2F; Webhook &#x2F; 本地任务 │                         │<br>│                     │────────────────────────&gt;│                         │<br>│                     │                        │                         │<br>│                     │                        │ 执行动作：转码&#x2F;缩略图&#x2F;AI等 │<br>│                     │                        │─────────────────────────&gt;│<br>│                     │                        │                         │<br>│                     │                        │ &lt;─回调结果&#x2F;更新状态──────│<br>│                     │                        │                         │</p>
+<p>四、触发机制逻辑（伪代码示例）</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">OnUploadComplete</span><span class="params">(fileMeta FileMeta)</span></span> &#123;</span><br><span class="line"><span class="comment">// 1. 查询该上传场景绑定的预计算规则</span></span><br><span class="line">actions := repo.QueryPreActions(fileMeta.SceneID)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> _, action := <span class="keyword">range</span> actions &#123;</span><br><span class="line">        <span class="keyword">if</span> matchCondition(fileMeta, action.TriggerCondition) &#123;</span><br><span class="line">            <span class="keyword">switch</span> action.ExecuteMode &#123;</span><br><span class="line">            <span class="keyword">case</span> MODE_ASYNC_MQ:</span><br><span class="line">                mq.Publish(action.ActionType, fileMeta)</span><br><span class="line">            <span class="keyword">case</span> MODE_WEBHOOK:</span><br><span class="line">                http.Post(action.TargetURL, fileMeta)</span><br><span class="line">            <span class="keyword">case</span> MODE_LOCAL:</span><br><span class="line">                runLocalAction(action, fileMeta)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>✅ 说明：</p>
+<p>matchCondition 用于判断 MIME、文件大小、标签、上传场景等条件。</p>
+<p>支持多种触发模式（异步消息 &#x2F; Webhook &#x2F; 本地执行）。</p>
+<p>可结合任务状态表记录每次动作执行的结果。</p>
+<p>五、cloud_process_pre_action 表字段扩展建议</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>bigint</td>
+<td>主键</td>
+</tr>
+<tr>
+<td>upload_id</td>
+<td>bigint</td>
+<td>关联上传配置</td>
+</tr>
+<tr>
+<td>action_type</td>
+<td>varchar(32)</td>
+<td>动作类型（transcode、thumbnail、ai、sync等）</td>
+</tr>
+<tr>
+<td>action_name</td>
+<td>varchar(64)</td>
+<td>自定义动作名</td>
+</tr>
+<tr>
+<td>trigger_condition</td>
+<td>varchar(256)</td>
+<td>JSON规则：<code>&#123;&quot;mime&quot;:&quot;image/*&quot;,&quot;size_lt&quot;:10485760&#125;</code></td>
+</tr>
+<tr>
+<td>execute_mode</td>
+<td>tinyint</td>
+<td>1异步(MQ) 2Webhook 3本地执行</td>
+</tr>
+<tr>
+<td>target_url</td>
+<td>varchar(256)</td>
+<td>Webhook地址或MQ topic名</td>
+</tr>
+<tr>
+<td>retry_strategy</td>
+<td>varchar(64)</td>
+<td>失败重试策略（如<code>3x@5min</code>）</td>
+</tr>
+<tr>
+<td>status</td>
+<td>tinyint</td>
+<td>状态：1启用 9关闭</td>
+</tr>
+<tr>
+<td>creator &#x2F; modifier</td>
+<td>varchar(32)</td>
+<td>创建&#x2F;修改者</td>
+</tr>
+<tr>
+<td>create_time &#x2F; modify_time</td>
+<td>datetime</td>
+<td>创建&#x2F;修改时间</td>
+</tr>
+</tbody></table>
+<p>六、预计算触发机制实现建议</p>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>说明</th>
+<th>推荐实现</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>MQ 消息队列</strong></td>
+<td>解耦上传与后处理</td>
+<td>Kafka &#x2F; RabbitMQ &#x2F; RocketMQ</td>
+</tr>
+<tr>
+<td><strong>Worker Pool</strong></td>
+<td>异步消费任务</td>
+<td>Go 协程池、Celery、Sidekiq</td>
+</tr>
+<tr>
+<td><strong>Webhook 调用器</strong></td>
+<td>与外部系统联动</td>
+<td>支持签名校验、重试</td>
+</tr>
+<tr>
+<td><strong>任务日志表</strong></td>
+<td>记录动作执行结果</td>
+<td><code>cloud_process_action_log</code></td>
+</tr>
+<tr>
+<td><strong>缓存层</strong></td>
+<td>加速 pre_action 配置查询</td>
+<td>Redis &#x2F; Etcd</td>
+</tr>
+</tbody></table>
+<p>七、可扩展场景</p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>视频转码链式任务</strong></td>
+<td>上传 → 触发转码 → 转码完成 → 回调刷新CDN</td>
+</tr>
+<tr>
+<td><strong>AI标签识别</strong></td>
+<td>上传图片 → AI服务分析 → 回写标签到DB</td>
+</tr>
+<tr>
+<td><strong>数据同步</strong></td>
+<td>上传成功 → 触发Meta同步到搜索系统</td>
+</tr>
+<tr>
+<td><strong>延迟处理</strong></td>
+<td>上传后延迟触发（如5分钟后生成缩略图）</td>
+</tr>
+</tbody></table>
+<p>八、整体收益</p>
+<p>✅ 跨云资源管理统一化<br>✅ 上传与后处理解耦<br>✅ 支持多协议与多执行通道<br>✅ 易于扩展（配置驱动，无需改代码）<br>✅ 支持灰度与回滚</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://ruanyi.github.io.git">ruanyi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://ruanyi.github.io.git/posts/Infinity.html">https://ruanyi.github.io.git/posts/Infinity.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://ruanyi.github.io.git" target="_blank">朝花夕拾!</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/img/avatar.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/loading.gif" data-original="/img/wechat.jpg" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/loading.gif" data-original="/img/alipay.jpg" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/posts/842b654c.html" title="多云对象管理"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">多云对象管理</div></div><div class="info-2"><div class="info-item-1">背景随着云计算技术的成熟，越来越多的中小型企业（特别是暂无自建：小文件存储体系的公司）采用多云（Multi-Cloud）或混合云（Hybrid-Cloud）战略，以避免被某个供应商锁定，与此同时，也能利用不同云厂商的优势技术。而图片or 视频数据作为企业核心资产之一，常常分散存储在AWSS3、Google Cloud Storage、Azure Blob Storage、阿里云OSS、华为云OBS、火山云tos等多个对象存储服务中。在这种背景下，跨云、跨账号的数据流动和管理变得日益频繁和复杂。 愿景本文旨在打造一个统一、高效、安全的跨云存储管理平台。 1、提供统一前端管理界面，让用户无需关心底层云厂商的API差异，即可通过一个统一的api、界面、播放器、下载器，直观地在不同云存储桶之间浏览、管理和传输文件，实现数据的自由流动，大幅提升数据运维效率。 2、公司若决策从A云迁移到B云时，让上层业务，尽可能的少感知：底层小文件存储的迁移变化，基于此系统，只需简单几步，即可方便地：按照bucket维度实现：数据同步（增量 +存量）、数据回源、数据验证、数据切换上线，数据割接。 3、需设计...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">ruanyi</div><div class="author-info-description">Tommy Ruan</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">16</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">13</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/ruanyi"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/ruanyi" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:540728086@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">朝花夕拾</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/Infinity.html" title="预计算">预计算</a><time datetime="2025-11-08T09:30:20.000Z" title="发表于 2025-11-08 17:30:20">2025-11-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/842b654c.html" title="多云对象管理">多云对象管理</a><time datetime="2025-09-21T14:02:53.000Z" title="发表于 2025-09-21 22:02:53">2025-09-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/16cbc1ca.html" title="deepseek论文解读">deepseek论文解读</a><time datetime="2025-03-09T14:09:06.000Z" title="发表于 2025-03-09 22:09:06">2025-03-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/4d3edad6.html" title="视频切片并行加速">视频切片并行加速</a><time datetime="2025-03-07T13:57:57.799Z" title="发表于 2025-03-07 21:57:57">2025-03-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/9489c3a6.html" title="算法工程化">算法工程化</a><time datetime="2025-03-01T07:53:41.607Z" title="发表于 2025-03-01 15:53:41">2025-03-01</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2023 - 2025 By ruanyi</span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.2"></script><script src="/js/main.js?v=5.5.2"></script><div class="js-pjax"></div><canvas id="universe"></canvas><script defer src="/js/universe.js"></script><script src="/js/sun_moon.js" async></script><script src="//npm.elemecdn.com/leancloud-storage@4.13.1/dist/av-min.js"></script><script type="text/javascript" src="/js/dianzan.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = true;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="/"></script></div><!-- hexo injector body_end start --><script data-pjax>
+  function butterfly_clock_anzhiyu_injector_config(){
+    var parent_div_git = document.getElementsByClassName('sticky_layout')[0];
+    var item_html = '<div class="card-widget card-clock"><div class="card-glass"><div class="card-background"><div class="card-content"><div id="hexo_electric_clock"><img class="entered loading" id="card-clock-loading" src="/img/loading.gif" data-original="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/loading.gif" style="height: 120px; width: 100%;" data-ll-status="loading"/></div></div></div></div></div>';
+    console.log('已挂载butterfly_clock_anzhiyu')
+    if(parent_div_git) {
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  }
+  var elist = 'null'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var qweather_key = 'e6a79dfc143a4aec961f9de5519f73e0';
+  var gaud_map_key = 'a6c7f819e77cf77621fce4a9cbc5d096';
+  var baidu_ak_key = 'undefined';
+  var flag = 0;
+  var clock_rectangle = '112.982279,28.19409';
+  var clock_default_rectangle_enable = 'false';
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_clock_anzhiyu_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_clock_anzhiyu_injector_config();
+  }
+  </script><script src="https://widget.qweather.net/simple/static/js/he-simple-common.js?v=2.0"></script><script data-pjax src="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/clock.min.js"></script><!-- hexo injector body_end end -->
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(r){r.imageLazyLoadSetting.processImages=t;var e=r.imageLazyLoadSetting.isSPA,n=r.imageLazyLoadSetting.preloadRatio||1,c=a();function a(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(){e&&(c=a());for(var t,o=0;o<c.length;o++)0<=(t=(t=c[o]).getBoundingClientRect()).bottom&&0<=t.left&&t.top<=(r.innerHeight*n||document.documentElement.clientHeight*n)&&function(){var t,e,n,a,i=c[o];e=function(){c=c.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(n=new Image,a=t.getAttribute("data-original"),n.onload=function(){t.src=a,t.removeAttribute("data-original"),e&&e()},t.src!==a&&(n.src=a))}()}function i(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",i),r.addEventListener("resize",i),r.addEventListener("orientationchange",i)}(this);</script></body></html>

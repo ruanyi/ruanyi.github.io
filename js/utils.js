@@ -106,7 +106,7 @@
 
     loadComment: (dom, callback) => {
       if ('IntersectionObserver' in window) {
-        const observerItem = new IntersectionObserver((entries) => {
+        const observerItem = new IntersectionObserver(entries => {
           if (entries[0].isIntersecting) {
             callback()
             observerItem.disconnect()
